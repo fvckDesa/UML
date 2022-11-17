@@ -6,17 +6,18 @@ export interface Variable {
 
 export type Visibility = "public" | "private" | "protected" | "package";
 
-interface JavaClassElement extends Variable {
+export interface Attribute extends Variable {
   visibility: Visibility;
   isStatic: boolean;
 }
 
-interface Method extends JavaClassElement {
+export interface Method extends Attribute {
   parameters: Variable[];
 }
 
 export interface JavaClass {
+  id?: string;
   name: string;
-  attributes: JavaClassElement[];
+  attributes: Attribute[];
   methods: Method[];
 }
