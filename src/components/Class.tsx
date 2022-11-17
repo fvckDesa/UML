@@ -1,4 +1,6 @@
+// types
 import type { JavaClass } from "../types/class";
+// utils
 import { convertVisibility, createParameterString } from "../utils/class";
 
 interface IProps {
@@ -7,14 +9,14 @@ interface IProps {
 
 function Class({ javaClass: { name, attributes, methods } }: IProps) {
   return (
-    <div className="border-2 border-gray-400 rounded-lg overflow-hidden font-medium">
+    <div className="min-w-[200px] border-2 border-gray-400 rounded-lg overflow-hidden font-medium cursor-pointer">
       <h1
         className="text-lg text-center font-semibold p-2 border-b-2 border-gray-400 bg-gray-200"
         data-testid="name"
       >
         {name}
       </h1>
-      <ul className="p-2 border-b-2 border-gray-400">
+      <ul className="min-h-[50px] p-2 border-b-2 border-gray-400 transition-all">
         {attributes.map(({ name, visibility, type, isArray, isStatic }) => (
           <li
             key={name}
@@ -27,7 +29,7 @@ function Class({ javaClass: { name, attributes, methods } }: IProps) {
           </li>
         ))}
       </ul>
-      <ul className="p-2">
+      <ul className="min-h-[50px] p-2">
         {methods.map(
           ({ name, visibility, type, isArray, isStatic, parameters }) => (
             <li
