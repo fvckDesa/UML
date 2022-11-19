@@ -1,7 +1,7 @@
-import { createContext, useContext, useCallback, useState } from "react";
+import { createContext, useContext, useState } from "react";
 // types
-import type { UMLContext, AddClassFn, JavaClassUpdate } from "../types/UML";
-import type { JavaClass } from "../types/class";
+import type { UMLContext, AddClassFn, JavaClassUpdate } from "@src/types/UML";
+import type { JavaClass } from "@src/types/class";
 import type { ReactNode } from "react";
 // uuid
 import { v4 as uuid } from "uuid";

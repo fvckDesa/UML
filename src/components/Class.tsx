@@ -1,7 +1,7 @@
 // types
-import type { JavaClass } from "../types/class";
+import type { JavaClass } from "@src/types/class";
 // utils
-import { convertVisibility, createParameterString } from "../utils/class";
+import { convertVisibility, createParameterString } from "@src/utils/class";
 
 interface IProps {
   javaClass: JavaClass;

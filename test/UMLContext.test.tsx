@@ -3,10 +3,10 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, renderHook, act } from "@testing-library/react";
 // types
-import { JavaClass } from "../src/types/class";
-import type { UMLContext } from "../src/types/UML";
+import { JavaClass } from "@src/types/class";
+import type { UMLContext } from "@src/types/UML";
 // component
-import UMLProvider, { useUMLContext } from "../src/contexts/UML";
+import UMLProvider, { useUMLContext } from "@src/contexts/UML";
 
 vi.mock("uuid");
 

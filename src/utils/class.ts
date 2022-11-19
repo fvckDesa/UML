@@ -1,4 +1,4 @@
-import type { Visibility, Variable } from "../types/class";
+import type { Visibility, Variable } from "@src/types/class";
 
 export function convertVisibility(visibility: Visibility): string | never {
   switch (visibility) {
