@@ -1,7 +1,7 @@
 function uuid() {
   let id = 0;
   return function () {
-    return String(++id);
+    return "a" + ++id;
   };
 }
 

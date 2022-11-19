@@ -16,7 +16,6 @@ export interface Method extends Attribute {
 }
 
 export interface JavaClass {
-  id?: string;
   name: string;
   attributes: Attribute[];
   methods: Method[];

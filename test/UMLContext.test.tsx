@@ -73,14 +73,8 @@ describe("Context provider", () => {
 });
 
 describe("Context hook", () => {
-  it("Have classes array", () => {
-    const { result } = renderHook(useUMLContext, { wrapper: UMLProvider });
-    const { classes } = result.current as UMLContext;
-    expect(Array.isArray(classes)).toBe(true);
-  });
-
   describe("Add class", () => {
-    it("Classes have unique id", () => {
+    it("Classes have unique id how key of object", () => {
       const { result } = renderHook(useUMLContext, {
         wrapper: UMLProvider,
       });
@@ -92,9 +86,7 @@ describe("Context hook", () => {
 
       const { classes } = result.current as UMLContext;
 
-      expect(classes[0].id).toBe("1");
-      expect(classes[1].id).toBe("2");
-      expect(classes[2].id).toBe("3");
+      expect(Object.keys(classes)).toEqual(["a1", "a2", "a3"]);
     });
 
     it("Add class without attributes and methods", () => {
@@ -107,8 +99,7 @@ describe("Context hook", () => {
 
       const { classes } = result.current as UMLContext;
 
-      expect(classes[0]).toEqual<JavaClass>({
-        id: "4",
+      expect(classes["a4"]).toEqual({
         name: "Test",
         attributes: [],
         methods: [],
@@ -123,8 +114,7 @@ describe("Context hook", () => {
 
       const { classes } = result.current as UMLContext;
 
-      expect(classes[0]).toEqual<JavaClass>({
-        id: "5",
+      expect(classes["a5"]).toEqual({
         name: "Test",
         attributes: [
           {
@@ -161,8 +151,7 @@ describe("Context hook", () => {
 
       const { classes } = result.current as UMLContext;
 
-      expect(classes[0]).toEqual<JavaClass>({
-        id: "6",
+      expect(classes["a6"]).toEqual({
         name: "test",
         attributes: [],
         methods: [
@@ -197,13 +186,13 @@ describe("Context hook", () => {
 
       act(() => addClass("test1"));
       act(() => addClass("test2"));
-      act(() => removeClass("7"));
+      act(() => removeClass("a7"));
 
       const { classes } = result.current as UMLContext;
 
-      expect(classes).toEqual<JavaClass[]>([
-        { id: "8", name: "test2", attributes: [], methods: [] },
-      ]);
+      expect(classes).toEqual({
+        a8: { name: "test2", attributes: [], methods: [] },
+      });
     });
   });
 
@@ -214,7 +203,7 @@ describe("Context hook", () => {
 
       act(() => addClass("test1"));
       act(() =>
-        updateClass("9", {
+        updateClass("a9", {
           name: "test",
           attributes: [
             {
@@ -229,9 +218,8 @@ describe("Context hook", () => {
       );
 
       const { classes } = result.current as UMLContext;
-      expect(classes).toEqual<JavaClass[]>([
-        {
-          id: "9",
+      expect(classes).toEqual({
+        a9: {
           name: "test",
           attributes: [
             {
@@ -244,7 +232,7 @@ describe("Context hook", () => {
           ],
           methods: [],
         },
-      ]);
+      });
     });
 
     it("Update class with wrong id", () => {
@@ -256,9 +244,9 @@ describe("Context hook", () => {
 
       const { classes } = result.current as UMLContext;
 
-      expect(classes).toEqual<JavaClass[]>([
-        { id: "10", name: "test1", attributes: [], methods: [] },
-      ]);
+      expect(classes).toEqual({
+        a10: { name: "test1", attributes: [], methods: [] },
+      });
     });
   });
 });

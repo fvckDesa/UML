@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 // types
-import type { UMLContext, AddClassFn, JavaClassUpdate } from "@src/types/UML";
+import type { UMLContext, AddClassFn } from "@src/types/UML";
 import type { JavaClass } from "@src/types/class";
 import type { ReactNode } from "react";
 // uuid
@@ -13,30 +13,27 @@ interface IProps {
 const Context = createContext<UMLContext | null>(null);
 
 export default function UMLProvider({ children }: IProps) {
-  const [classes, setClasses] = useState<JavaClass[]>([]);
+  const [classes, setClasses] = useState<Record<string, JavaClass>>({});
   const addClass: AddClassFn = (name, attributes = [], methods = []) => {
-    setClasses((prev) =>
-      prev.concat({
-        id: uuid(),
-        name,
-        attributes,
-        methods,
-      })
-    );
+    setClasses((prev) => ({
+      ...prev,
+      [uuid()]: { name, attributes, methods },
+    }));
   };
 
   function removeClass(id: string): void {
-    setClasses((prev) => prev.filter((javaClass) => javaClass.id !== id));
+    setClasses((prev) => {
+      const { [id]: removedClass, ...otherClasses } = prev;
+      if (removedClass == undefined)
+        console.error(`Java Class with id ${id} not exists`);
+
+      return otherClasses;
+    });
   }
 
-  function updateClass(id: string, update: JavaClassUpdate): void {
+  function updateClass(id: string, update: Partial<JavaClass>): void {
     setClasses((prev) =>
-      prev.map((javaClass) => {
-        if (javaClass.id === id) {
-          return { ...javaClass, ...update };
-        }
-        return javaClass;
-      })
+      prev[id] ? { ...prev, [id]: { ...prev[id], ...update } } : prev
     );
   }
 
