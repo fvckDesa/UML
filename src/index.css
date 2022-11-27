@@ -6,4 +6,8 @@
   .btnAction {
     @apply opacity-70 rounded transition-all hover:bg-gray-200 hover:opacity-100;
   }
+
+  [data-grabbing="true"] * {
+    cursor: grabbing;
+  }
 }
