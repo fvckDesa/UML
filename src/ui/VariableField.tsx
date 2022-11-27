@@ -34,19 +34,21 @@ function VariableField({ isArray, register, index, errors, onRemove }: IProps) {
       <p>{index + 1}.</p>
       <input
         className={`w-[30%] px-1 text-sm leading-6 outline-none border-2 ${
-          errors?.name ? "border-red-500" : "border-gray-300"
+          errors?.name ? "!border-red-500" : "border-gray-300"
         } rounded focus:border-blue-500`}
         type="text"
         placeholder="Name"
+        autoComplete="off"
         data-testid="parameter-name"
         {...register(`parameters.${index}.name`, { required: true })}
       />
       <input
         className={`w-[30%] px-1 text-sm leading-6 outline-none border-2 ${
-          errors?.type ? "border-red-500" : "border-gray-300"
+          errors?.type ? "!border-red-500" : "border-gray-300"
         } rounded focus:border-blue-500`}
         type="text"
         placeholder="Type"
+        autoComplete="off"
         data-testid="parameter-type"
         {...register(`parameters.${index}.type`, { required: true })}
       />
