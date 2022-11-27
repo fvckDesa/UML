@@ -1,20 +1,17 @@
 import ReactDOM from "react-dom";
 // types
 import type { Attribute } from "@src/types/class";
+import type { Modal } from "@src/types/modal";
 // components
 import { InputField, SelectField, CheckboxField, LoaderButton } from "@src/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 // icon
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-interface IProps {
-  close: boolean;
-  onSave: (data: Attribute) => void;
-  onClose: () => void;
-  data?: Attribute;
-}
+type IProps = Modal<Attribute>;
 
 function AttributeModal({ data, close, onSave, onClose }: IProps) {
   const {
@@ -22,10 +19,25 @@ function AttributeModal({ data, close, onSave, onClose }: IProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
+    reset,
   } = useForm<Attribute>({ defaultValues: data });
 
-  function handlerSubmit(data: Attribute) {
-    onSave(data);
+  useEffect(() => {
+    if (!data) return;
+    for (const [key, value] of Object.entries(data)) {
+      setValue(key as keyof Attribute, value);
+    }
+  }, [data]);
+
+  function handlerClose() {
+    onClose();
+    reset();
+  }
+
+  function handlerSubmit(newData: Attribute) {
+    onSave(newData);
+    handlerClose();
   }
 
   if (close) return null;
@@ -43,7 +55,7 @@ function AttributeModal({ data, close, onSave, onClose }: IProps) {
           <button
             className="w-8 h-8 btnAction"
             type="button"
-            onClick={() => onClose()}
+            onClick={handlerClose}
             data-testid="close-btn"
           >
             <FontAwesomeIcon icon={faXmark} />

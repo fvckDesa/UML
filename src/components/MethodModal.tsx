@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom";
 // types
 import type { Method } from "@src/types/class";
+import type { Modal } from "@src/types/modal";
 // components
 import {
   InputField,
@@ -14,17 +15,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm, useFieldArray } from "react-hook-form";
 // icon
 import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-interface IProps {
-  close: boolean;
-  onSave: (data: Method) => void;
-  onClose: () => void;
-  data?: Method;
-}
+type IProps = Modal<Method>;
 
 function ClassModal({ data, close, onSave, onClose }: IProps) {
   const listRef = useRef<HTMLUListElement>(null);
+  const [isTop, setIsTop] = useState(true);
   const {
     register,
     handleSubmit,
@@ -32,11 +29,24 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
     watch,
     control,
     setFocus,
+    setValue,
+    reset,
   } = useForm<Method>({ defaultValues: data });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "parameters",
   });
+
+  useEffect(() => {
+    if (!data) return;
+    for (const [key, value] of Object.entries(data)) {
+      if (key === "parameters") {
+        value.forEach(append);
+        continue;
+      }
+      setValue(key as keyof Method, value);
+    }
+  }, [data]);
 
   useLayoutEffect(() => {
     listRef.current?.scrollTo({
@@ -46,12 +56,24 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
     setFocus(`parameters.${fields.length - 1}.name`);
   }, [fields.length]);
 
+  function handlerClose() {
+    onClose();
+    remove(fields.map((_, i) => i));
+    reset();
+  }
+
   function handlerAppend() {
     append({ name: "", type: "", isArray: false });
   }
 
-  function handlerSubmit(data: Method) {
-    onSave(data);
+  function handlerSubmit(newData: Method) {
+    onSave(newData);
+    handlerClose();
+  }
+
+  function handlerParametersScroll() {
+    if (!listRef.current) return;
+    setIsTop(listRef.current.scrollTop === 0);
   }
 
   if (close) return null;
@@ -69,7 +91,7 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
           <button
             className="w-8 h-8 btnAction"
             type="button"
-            onClick={() => onClose()}
+            onClick={handlerClose}
             data-testid="close-btn"
           >
             <FontAwesomeIcon icon={faXmark} />
@@ -86,19 +108,23 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
             <option value="package">Package</option>
           </SelectField>
           <div className="overflow-x-hidden">
-            <header className="flex justify-between items-center">
+            <header className="flex justify-between items-center p-1">
               <h2>Parameters</h2>
               <button
                 className="btnAction w-6 h-6"
                 type="button"
                 onClick={handlerAppend}
+                data-testid="add-parameter"
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </header>
             <ul
               ref={listRef}
-              className="flex flex-col items-center gap-2 max-h-28 p-2 !pr-[50px] mr-[-50px] overflow-y-scroll scroll-smooth"
+              className={`flex flex-col items-center gap-2 max-h-[120px] p-2 !pr-[50px] border-t-2 ${
+                !isTop ? "border-blue-500" : "border-transparent"
+              } mr-[-50px] overflow-y-scroll scroll-smooth`}
+              onScroll={handlerParametersScroll}
             >
               {fields.map((field, i) => (
                 <VariableField
