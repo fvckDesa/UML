@@ -1,49 +1,45 @@
-import { createContext, useContext, useState } from "react";
 // types
-import type { UMLContext, AddClassFn } from "@src/types/UML";
-import type { JavaClass } from "@src/types/class";
-import type { ReactNode } from "react";
-// uuid
-import { v4 as uuid } from "uuid";
+import type { ReactNode, Dispatch } from "react";
+import type { ClassesState, ClassesAction } from "@src/types/classesReducer";
+import type { InfoState, InfoAction } from "@src/types/infoReducer";
+// hooks
+import { createContext, useContext, useReducer } from "react";
+// reducers
+import { classesReducer } from "@src/utils/classesReducer";
+import { infoReducer } from "@src/utils/infoReducer";
 
-interface IProps {
-  children: ReactNode;
+export interface UMLContext {
+  umlClasses: ClassesState;
+  dispatchClasses: Dispatch<ClassesAction>;
+  umlInfo: InfoState;
+  dispatchInfo: Dispatch<InfoAction>;
 }
 
 const Context = createContext<UMLContext | null>(null);
 
-export default function UMLProvider({ children }: IProps) {
-  const [classes, setClasses] = useState<Record<string, JavaClass>>({});
-  const addClass: AddClassFn = (name, attributes = [], methods = []) => {
-    setClasses((prev) => ({
-      ...prev,
-      [uuid()]: { name, attributes, methods },
-    }));
-  };
+interface IProps {
+  classes?: ClassesState;
+  info?: InfoState;
+  children: ReactNode;
+}
 
-  function removeClass(id: string): void {
-    setClasses((prev) => {
-      const { [id]: removedClass, ...otherClasses } = prev;
-      if (removedClass == undefined)
-        console.error(`Java Class with id ${id} not exists`);
+const initInfoState = { activeClass: "" };
 
-      return otherClasses;
-    });
-  }
-
-  function updateClass(id: string, update: Partial<JavaClass>): void {
-    setClasses((prev) =>
-      prev[id] ? { ...prev, [id]: { ...prev[id], ...update } } : prev
-    );
-  }
+export default function UMLProvider({
+  children,
+  classes = {},
+  info = initInfoState,
+}: IProps) {
+  const [umlClasses, dispatchClasses] = useReducer(classesReducer, classes);
+  const [umlInfo, dispatchInfo] = useReducer(infoReducer, info);
 
   return (
     <Context.Provider
       value={{
-        classes,
-        addClass,
-        removeClass,
-        updateClass,
+        umlClasses,
+        dispatchClasses,
+        umlInfo,
+        dispatchInfo,
       }}
     >
       {children}
@@ -51,4 +47,4 @@ export default function UMLProvider({ children }: IProps) {
   );
 }
 
-export const useUMLContext = () => useContext(Context);
+export const useUMLContext = () => useContext(Context) as UMLContext;
