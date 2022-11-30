@@ -26,6 +26,19 @@ export function classesReducer(
         },
       };
     }
+    case "class/final": {
+      const { id, isFinal } = payload;
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          javaClass: {
+            ...state[id].javaClass,
+            isFinal,
+          },
+        },
+      };
+    }
     case "class/remove": {
       const { id } = payload;
       const { [id]: classRemoved, ...otherState } = state;

@@ -93,6 +93,7 @@ function AttributeModal({ data, onSave, onClose }: IProps) {
             {...register("isArray")}
           />
           <CheckboxField text="Static" {...register("isStatic")} />
+          <CheckboxField text="Final" {...register("isFinal")} />
         </div>
         <footer className="px-4 py-2 border-t border-gray-300">
           <LoaderButton

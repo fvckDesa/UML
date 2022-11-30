@@ -9,6 +9,7 @@ export type Visibility = "public" | "private" | "protected" | "package";
 export interface Attribute extends Variable {
   visibility: Visibility;
   isStatic: boolean;
+  isFinal: boolean;
 }
 
 export interface Method extends Attribute {
@@ -17,6 +18,7 @@ export interface Method extends Attribute {
 
 export interface JavaClass {
   name: string;
+  isFinal: boolean;
   attributes: Attribute[];
   methods: Method[];
 }

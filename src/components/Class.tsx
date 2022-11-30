@@ -3,7 +3,11 @@ import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
 // hooks
 import { useCallback, useEffect, useRef } from "react";
 // utils
-import { stringifyAttribute, stringifyMethod } from "@src/utils/class";
+import {
+  stringifyAttribute,
+  stringifyFinal,
+  stringifyMethod,
+} from "@src/utils/class";
 import { useUMLContext } from "@src/contexts/UML";
 
 interface IProps {
@@ -18,7 +22,7 @@ function Class({ id, container, onClassSelect }: IProps) {
   const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
     useUMLContext();
   const {
-    javaClass: { name, attributes, methods },
+    javaClass: { name, isFinal, attributes, methods },
     coords,
   } = umlClasses[id];
 
@@ -98,7 +102,7 @@ function Class({ id, container, onClassSelect }: IProps) {
         className="text-lg text-center font-semibold p-2 border-b-2 border-gray-400 bg-gray-200"
         data-testid="name"
       >
-        {name || "Class"}
+        {stringifyFinal(name || "Class", isFinal)}
       </h1>
       <ul className="min-h-[50px] p-2 border-b-2 border-gray-400 transition-all">
         {attributes.map((attribute, i) => (

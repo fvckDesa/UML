@@ -16,9 +16,18 @@ type ClassNameAction = ActionGenerator<
   { id: string; name: string }
 >;
 
+type ClassFinalAction = ActionGenerator<
+  "class/final",
+  { id: string; isFinal: boolean }
+>;
+
 type ClassRemoveAction = ActionGenerator<"class/remove", { id: string }>;
 
-type ClassActions = ClassAddAction | ClassNameAction | ClassRemoveAction;
+type ClassActions =
+  | ClassAddAction
+  | ClassNameAction
+  | ClassFinalAction
+  | ClassRemoveAction;
 // action type attribute/*
 type AttributeAddAction = ActionGenerator<
   "attribute/add",

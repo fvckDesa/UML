@@ -1,8 +1,7 @@
 // types
-import type { JavaClass } from "@src/types/class";
 import type { ChangeEvent } from "react";
 // components
-import { InputField } from "@src/ui";
+import { CheckboxField, InputField } from "@src/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AttributePanelList from "./AttributePanelList";
 import MethodPanelList from "./MethodPanelList";
@@ -18,8 +17,9 @@ function ClassPanel() {
   const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
     useUMLContext();
   const { activeClass } = umlInfo;
-  const { javaClass = { name: "", attributes: [], methods: [] } } =
-    umlClasses[activeClass] ?? {};
+  const {
+    javaClass = { name: "", isFinal: false, attributes: [], methods: [] },
+  } = umlClasses[activeClass] ?? {};
 
   useEffect(() => {
     if (!activeClass) return;
@@ -66,6 +66,13 @@ function ClassPanel() {
     });
   }
 
+  function handlerFinalChange(e: ChangeEvent<HTMLInputElement>) {
+    dispatchClasses({
+      type: "class/final",
+      payload: { id: activeClass, isFinal: e.target.checked },
+    });
+  }
+
   function handlerDelete() {
     dispatchClasses({ type: "class/remove", payload: { id: activeClass } });
     handlerClose();
@@ -85,8 +92,9 @@ function ClassPanel() {
 
   return (
     <div
-      className={`absolute top-0 ${activeClass ? "right-0" : "-right-80"
-        } flex flex-col w-80 h-full py-6 border-l-2 border-gray-400 bg-white transition-all`}
+      className={`absolute top-0 ${
+        activeClass ? "right-0" : "-right-80"
+      } flex flex-col w-80 h-full py-6 border-l-2 border-gray-400 bg-white transition-all`}
     >
       <header className="flex justify-between items-center px-4 mb-4">
         <h1 className="text-xl">Class:</h1>
@@ -99,7 +107,7 @@ function ClassPanel() {
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </header>
-      <div className="px-4 mb-4">
+      <div className="flex flex-col gap-4 px-4 mb-4">
         <InputField
           label="Name"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -108,6 +116,7 @@ function ClassPanel() {
           value={javaClass.name}
           error={umlInfo.errors[activeClass]?.message}
         />
+        <CheckboxField text="Final" onChange={handlerFinalChange} />
       </div>
       <AttributePanelList
         attributes={javaClass.attributes}

@@ -25,6 +25,12 @@ function stringifyType(type: string, isArray: boolean): string {
   return `${type}${isArray ? "[]" : ""}`;
 }
 
+export function stringifyFinal(name: string, isFinal: boolean) {
+  return isFinal
+    ? (name[0] + name.slice(1).replace(/([A-Z])/g, "_$1")).toUpperCase()
+    : name;
+}
+
 export function stringifyParameter({ name, type, isArray }: Variable): string {
   // name: type
   // par1: String
@@ -36,13 +42,14 @@ export function stringifyAttribute({
   name,
   type,
   isArray,
+  isFinal,
 }: Attribute) {
   // visibility|name: type
   // -attribute: int[]
-  return `${convertVisibility(visibility)}${name}: ${stringifyType(
-    type,
-    isArray
-  )}`;
+  return `${convertVisibility(visibility)}${stringifyFinal(
+    name,
+    isFinal
+  )}: ${stringifyType(type, isArray)}`;
 }
 
 export function stringifyMethod({
@@ -51,12 +58,17 @@ export function stringifyMethod({
   parameters,
   type,
   isArray,
+  isFinal,
 }: Method) {
   // visibility|name(parameters): type
   // +myMethod(par1: String, par2: int[]): String[]
-  return `${convertVisibility(visibility)}${name}(${parameters
-    .map(stringifyParameter)
-    .join(", ")}): ${stringifyType(type, isArray)}`;
+  return `${convertVisibility(visibility)}${stringifyFinal(
+    name,
+    isFinal
+  )}(${parameters.map(stringifyParameter).join(", ")}): ${stringifyType(
+    type,
+    isArray
+  )}`;
 }
 
 export function generateClassCode({
@@ -68,11 +80,10 @@ export function generateClassCode({
 
   code += attributes
     .map(
-      ({ visibility, isStatic, type, isArray, name }) =>
-        `${visibility} ${isStatic ? "static " : ""}${stringifyType(
-          type,
-          isArray
-        )} ${name};`
+      ({ visibility, isStatic, isFinal, type, isArray, name }) =>
+        `${visibility} ${isStatic ? "static " : ""}${
+          isFinal ? "final " : ""
+        }${stringifyType(type, isArray)} ${name};`
     )
     .join("\t\n");
 
@@ -80,11 +91,12 @@ export function generateClassCode({
 
   code += methods
     .map(
-      ({ visibility, isStatic, type, isArray, name, parameters }) =>
-        `${visibility} ${isStatic ? "static " : ""}${stringifyType(
-          type,
-          isArray
-        )} ${name}(${parameters.map(stringifyParameter).join(", ")}) {}`
+      ({ visibility, isStatic, isFinal, type, isArray, name, parameters }) =>
+        `${visibility} ${isStatic ? "static " : ""}${
+          isFinal ? "final " : ""
+        }${stringifyType(type, isArray)} ${name}(${parameters
+          .map(stringifyParameter)
+          .join(", ")}) {}`
     )
     .join("\t\n");
 
