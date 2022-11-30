@@ -19,7 +19,7 @@ interface IProps<T> {
 }
 
 interface ModalState<T> {
-  isClose: boolean;
+  isOpen: boolean;
   data?: T;
   index?: number;
 }
@@ -34,16 +34,16 @@ function PanelList<ListType extends { name: string; isStatic: boolean }>({
   onRemove,
 }: IProps<ListType>) {
   const [modal, setModal] = useState<ModalState<ListType>>({
-    isClose: true,
+    isOpen: false,
   });
 
   function handlerClose() {
-    setModal({ isClose: true });
+    setModal({ isOpen: false });
   }
 
   function handlerOpen(index?: number) {
     setModal({
-      isClose: false,
+      isOpen: true,
       data: index != undefined ? listData[index] : undefined,
       index,
     });
@@ -81,12 +81,11 @@ function PanelList<ListType extends { name: string; isStatic: boolean }>({
           </PanelElement>
         ))}
       </ul>
-      <ModalComponent
-        close={modal.isClose}
+      {modal.isOpen && <ModalComponent
         onClose={handlerClose}
         onSave={handlerSave}
         data={modal?.data}
-      />
+      />}
     </div>
   );
 }

@@ -14,15 +14,14 @@ import { validation } from "@src/utils/validate";
 
 type IProps = Modal<Attribute>;
 
-function AttributeModal({ data, close, onSave, onClose }: IProps) {
+function AttributeModal({ data, onSave, onClose }: IProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
     setValue,
-    reset,
-  } = useForm<Attribute>({ defaultValues: data });
+  } = useForm<Attribute>();
 
   useEffect(() => {
     if (!data) return;
@@ -31,23 +30,20 @@ function AttributeModal({ data, close, onSave, onClose }: IProps) {
     }
   }, [data]);
 
-  function handlerClose() {
-    onClose();
-    reset();
-  }
-
   function handlerSubmit(newData: Attribute) {
     onSave(newData);
-    handlerClose();
+    onClose();
   }
 
-  if (close) return null;
-
   return ReactDOM.createPortal(
-    <div className="fixed top-0 w-screen h-screen p-5 flex justify-center items-center bg-modal">
+    <div
+      className="fixed top-0 w-screen h-screen p-5 flex justify-center items-center bg-modal"
+      onClick={() => onClose()}
+    >
       <form
         className="w-80 rounded-xl bg-white"
         onSubmit={handleSubmit(handlerSubmit)}
+        onClick={(e) => e.stopPropagation()}
       >
         <header className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
           <h1 className="text-lg font-semibold uppercase" data-testid="title">
@@ -56,7 +52,7 @@ function AttributeModal({ data, close, onSave, onClose }: IProps) {
           <button
             className="w-8 h-8 btnAction"
             type="button"
-            onClick={handlerClose}
+            onClick={() => onClose()}
             data-testid="close-btn"
           >
             <FontAwesomeIcon icon={faXmark} />

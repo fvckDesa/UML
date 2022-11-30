@@ -20,7 +20,7 @@ import { validation } from "@src/utils/validate";
 
 type IProps = Modal<Method>;
 
-function ClassModal({ data, close, onSave, onClose }: IProps) {
+function ClassModal({ data, onSave, onClose }: IProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const [isTop, setIsTop] = useState(true);
   const {
@@ -31,8 +31,7 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
     control,
     setFocus,
     setValue,
-    reset,
-  } = useForm<Method>({ defaultValues: data });
+  } = useForm<Method>({ defaultValues: { parameters: [] } });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "parameters",
@@ -47,6 +46,10 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
       }
       setValue(key as keyof Method, value);
     }
+
+    return () => {
+      remove(data.parameters.map((_, i) => i));
+    };
   }, [data]);
 
   useLayoutEffect(() => {
@@ -57,19 +60,13 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
     setFocus(`parameters.${fields.length - 1}.name`);
   }, [fields.length]);
 
-  function handlerClose() {
-    onClose();
-    remove(fields.map((_, i) => i));
-    reset();
-  }
-
   function handlerAppend() {
     append({ name: "", type: "", isArray: false });
   }
 
   function handlerSubmit(newData: Method) {
     onSave(newData);
-    handlerClose();
+    onClose();
   }
 
   function handlerParametersScroll() {
@@ -77,13 +74,15 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
     setIsTop(listRef.current.scrollTop === 0);
   }
 
-  if (close) return null;
-
   return ReactDOM.createPortal(
-    <div className="fixed top-0 w-screen h-screen p-5 flex justify-center items-center bg-modal">
+    <div
+      className="fixed top-0 w-screen h-screen p-5 flex justify-center items-center bg-modal"
+      onClick={() => onClose()}
+    >
       <form
         className="w-80 rounded-xl bg-white"
         onSubmit={handleSubmit(handlerSubmit)}
+        onClick={(e) => e.stopPropagation()}
       >
         <header className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
           <h1 className="text-lg font-semibold uppercase" data-testid="title">
@@ -92,7 +91,7 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
           <button
             className="w-8 h-8 btnAction"
             type="button"
-            onClick={handlerClose}
+            onClick={() => onClose()}
             data-testid="close-btn"
           >
             <FontAwesomeIcon icon={faXmark} />
