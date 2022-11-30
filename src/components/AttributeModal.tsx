@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 // icon
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { validation } from "@src/utils/validate";
 
 type IProps = Modal<Attribute>;
 
@@ -76,6 +77,9 @@ function AttributeModal({ data, close, onSave, onClose }: IProps) {
             error={errors.name?.message}
             {...register("name", {
               required: `Name of attribute is required`,
+              validate: {
+                ...validation("name"),
+              },
             })}
           />
           <InputField
@@ -83,6 +87,9 @@ function AttributeModal({ data, close, onSave, onClose }: IProps) {
             error={errors.type?.message}
             {...register("type", {
               required: `${"Type"} is required`,
+              validate: {
+                ...validation("type"),
+              },
             })}
           />
           <CheckboxField

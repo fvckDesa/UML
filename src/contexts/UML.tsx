@@ -23,7 +23,7 @@ interface IProps {
   children: ReactNode;
 }
 
-const initInfoState = { activeClass: "" };
+const initInfoState = { activeClass: "", errors: {} };
 
 export default function UMLProvider({
   children,

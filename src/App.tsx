@@ -1,58 +1,21 @@
-import Class from "./components/Class";
-import type { JavaClass } from "./types/class";
-
-const Custom: JavaClass = {
-  name: "test",
-  attributes: [
-    {
-      name: "att1",
-      type: "int",
-      isArray: false,
-      visibility: "public",
-      isStatic: true,
-    },
-    {
-      name: "att2",
-      type: "float",
-      isArray: true,
-      visibility: "private",
-      isStatic: false,
-    },
-    {
-      name: "att3",
-      type: "Custom",
-      isArray: false,
-      visibility: "package",
-      isStatic: false,
-    },
-  ],
-  methods: [
-    {
-      name: "method1",
-      type: "int",
-      isArray: false,
-      visibility: "public",
-      isStatic: true,
-      parameters: [
-        { name: "var1", type: "String", isArray: false },
-        { name: "var2", type: "double", isArray: true },
-      ],
-    },
-    {
-      name: "method2",
-      type: "String",
-      isArray: true,
-      visibility: "protected",
-      isStatic: false,
-      parameters: [],
-    },
-  ],
-};
+import { useState } from "react";
+import ClassPanel from "./components/ClassPanel";
+import TopBar from "./components/TopBar";
+import ViewArea from "./components/ViewArea";
 
 function App() {
+  const [centerCoords, setCenterCoords] = useState({
+    x: 0,
+    y: 0,
+  });
+
   return (
-    <div className="w-screen h-screen font-sans flex justify-center items-center">
-      <Class javaClass={Custom} />
+    <div className="w-screen h-screen font-sans overflow-hidden select-none">
+      <TopBar centerCoords={centerCoords} />
+      <div className="relative w-full h-[calc(100%-48px)]">
+        <ClassPanel />
+        <ViewArea onCenterChange={setCenterCoords} />
+      </div>
     </div>
   );
 }

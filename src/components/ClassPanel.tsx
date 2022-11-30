@@ -31,6 +31,35 @@ function ClassPanel() {
   }
 
   function handlerNameChange(newName: string) {
+    if (newName === "") {
+      dispatchInfo({
+        type: "error/change",
+        payload: {
+          id: activeClass,
+          error: {
+            type: "required",
+            message: "Name of class is required",
+          },
+        },
+      });
+    } else if (/^[a-z]/.test(newName)) {
+      dispatchInfo({
+        type: "error/change",
+        payload: {
+          id: activeClass,
+          error: {
+            type: "startUppercase",
+            message: "Must start with uppercase letter",
+          },
+        },
+      });
+    } else {
+      dispatchInfo({
+        type: "error/remove",
+        payload: { id: activeClass },
+      });
+    }
+
     dispatchClasses({
       type: "class/name",
       payload: { id: activeClass, name: newName },
@@ -56,9 +85,8 @@ function ClassPanel() {
 
   return (
     <div
-      className={`absolute top-0 ${
-        activeClass ? "right-0" : "-right-80"
-      } flex flex-col w-80 h-full py-6 border-l-2 border-gray-400 bg-white transition-all`}
+      className={`absolute top-0 ${activeClass ? "right-0" : "-right-80"
+        } flex flex-col w-80 h-full py-6 border-l-2 border-gray-400 bg-white transition-all`}
     >
       <header className="flex justify-between items-center px-4 mb-4">
         <h1 className="text-xl">Class:</h1>
@@ -78,6 +106,7 @@ function ClassPanel() {
             handlerNameChange(e.target.value)
           }
           value={javaClass.name}
+          error={umlInfo.errors[activeClass]?.message}
         />
       </div>
       <AttributePanelList
@@ -87,10 +116,11 @@ function ClassPanel() {
       <MethodPanelList methods={javaClass.methods} classId={activeClass} />
       <footer className="flex justify-between items-center px-4 mt-auto">
         <button
-          className="btnAction w-10 h-10 border border-gray-500"
+          className="btnAction w-10 h-10 border opacity-100 border-gray-500 transition-opacity duration-300 disabled:opacity-25 disabled:bg-white"
           type="button"
           onClick={handlerCode}
           data-testid="code-btn"
+          disabled={!!umlInfo.errors[activeClass]}
         >
           <FontAwesomeIcon icon={faCode} />
         </button>

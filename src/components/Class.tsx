@@ -81,10 +81,12 @@ function Class({ id, container, onClassSelect }: IProps) {
       data-class-id={id}
       ref={classRef}
       className={`absolute min-w-[200px] w-fit ${
-        umlInfo.activeClass === id
+        umlInfo.errors[id]
+          ? "border-4 border-red-500"
+          : umlInfo.activeClass === id
           ? "border-4 border-blue-500"
           : "border-2 border-gray-400"
-      } rounded-lg overflow-hidden font-medium cursor-pointer bg-white`}
+      } rounded-lg overflow-hidden font-medium cursor-pointer bg-white transition-border duration-300`}
       style={{
         top: `${coords.y}px`,
         left: `${coords.x}px`,

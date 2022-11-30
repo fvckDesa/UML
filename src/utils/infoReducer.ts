@@ -9,6 +9,23 @@ export function infoReducer(state: InfoState, action: InfoAction): InfoState {
         activeClass: payload.id,
       };
     }
+    case "error/change": {
+      const { id, error } = payload;
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          [id]: error,
+        },
+      };
+    }
+    case "error/remove": {
+      const { [payload.id]: _, ...errors } = state.errors;
+      return {
+        ...state,
+        errors,
+      };
+    }
     default: {
       return state;
     }

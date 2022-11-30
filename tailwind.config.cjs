@@ -6,6 +6,9 @@ module.exports = {
       backgroundColor: {
         modal: "rgba(0, 0, 0, 0.5)",
       },
+      transitionProperty: {
+        border: "border-width, border-color",
+      },
     },
   },
   plugins: [],

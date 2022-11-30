@@ -16,6 +16,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 // icon
 import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { validation } from "@src/utils/validate";
 
 type IProps = Modal<Method>;
 
@@ -143,13 +144,19 @@ function ClassModal({ data, close, onSave, onClose }: IProps) {
             error={errors.name?.message}
             {...register("name", {
               required: `Name of method is required`,
+              validate: {
+                ...validation("name"),
+              },
             })}
           />
           <InputField
             label={"Return type"}
             error={errors.type?.message}
             {...register("type", {
-              required: `${"Return type"} is required`,
+              required: `Return type is required`,
+              validate: {
+                ...validation("return type"),
+              },
             })}
           />
           <CheckboxField
