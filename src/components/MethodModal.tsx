@@ -31,7 +31,7 @@ function ClassModal({ data, onSave, onClose }: IProps) {
     control,
     setFocus,
     setValue,
-  } = useForm<Method>({ defaultValues: { parameters: [] } });
+  } = useForm<Method>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "parameters",

@@ -74,7 +74,11 @@ function VariableField({ isArray, register, index, errors, onRemove }: IProps) {
           {...other}
         />
       </button>
-      <button className="btnAction w-6 h-6" onClick={() => onRemove(index)}>
+      <button
+        className="btnAction w-6 h-6"
+        type="button"
+        onClick={() => onRemove(index)}
+      >
         <FontAwesomeIcon icon={faXmark} />
       </button>
     </li>
