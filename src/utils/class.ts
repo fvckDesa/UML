@@ -4,6 +4,7 @@ import type {
   Attribute,
   Method,
   JavaClass,
+  Constructor,
 } from "@src/types/class";
 
 function convertVisibility(visibility: Visibility): string | never {
@@ -52,6 +53,16 @@ export function stringifyAttribute({
   )}: ${stringifyType(type, isArray)}`;
 }
 
+export function stringifyConstructor({
+  visibility,
+  name,
+  parameters,
+}: Constructor) {
+  return `${convertVisibility(visibility)}${name || "Class"}(${parameters
+    .map(stringifyParameter)
+    .join(", ")})`;
+}
+
 export function stringifyMethod({
   visibility,
   name,
@@ -74,6 +85,7 @@ export function stringifyMethod({
 export function generateClassCode({
   name,
   attributes,
+  constructors,
   methods,
 }: JavaClass): string {
   let code = `public class ${name} {\n\t`;
@@ -87,7 +99,18 @@ export function generateClassCode({
     )
     .join("\t\n");
 
-  code += "\t\n\t";
+  code += "\t\n\t\n\t";
+
+  code += constructors.map(
+    ({ visibility, name, parameters }) =>
+      `${visibility} ${name}(${parameters
+        .map(
+          ({ type, isArray, name }) => `${stringifyType(type, isArray)} ${name}`
+        )
+        .join(", ")}) {}`
+  );
+
+  code += "\t\n\t\n\t";
 
   code += methods
     .map(
@@ -95,7 +118,10 @@ export function generateClassCode({
         `${visibility} ${isStatic ? "static " : ""}${
           isFinal ? "final " : ""
         }${stringifyType(type, isArray)} ${name}(${parameters
-          .map(stringifyParameter)
+          .map(
+            ({ type, isArray, name }) =>
+              `${stringifyType(type, isArray)} ${name}`
+          )
           .join(", ")}) {}`
     )
     .join("\t\n");

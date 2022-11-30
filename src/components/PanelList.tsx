@@ -24,7 +24,7 @@ interface ModalState<T> {
   index?: number;
 }
 
-function PanelList<ListType extends { name: string; isStatic: boolean }>({
+function PanelList<ListType>({
   listData = [],
   ModalComponent,
   formatData,
@@ -72,20 +72,21 @@ function PanelList<ListType extends { name: string; isStatic: boolean }>({
       <ul className="pl-1 mt-3">
         {listData.map((data, i) => (
           <PanelElement
-            key={data.name + i}
+            key={i}
             onSliders={handlerOpen.bind(null, i)}
             onDelete={() => onRemove(i)}
-            textClass={data.isStatic ? "underline" : ""}
           >
             {formatData(data)}
           </PanelElement>
         ))}
       </ul>
-      {modal.isOpen && <ModalComponent
-        onClose={handlerClose}
-        onSave={handlerSave}
-        data={modal?.data}
-      />}
+      {modal.isOpen && (
+        <ModalComponent
+          onClose={handlerClose}
+          onSave={handlerSave}
+          data={modal?.data}
+        />
+      )}
     </div>
   );
 }

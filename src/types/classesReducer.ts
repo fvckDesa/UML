@@ -1,4 +1,4 @@
-import type { JavaClass, Attribute, Method } from "./class";
+import type { JavaClass, Attribute, Method, Constructor } from "./class";
 import type { Coords, ActionGenerator } from "./general";
 
 export interface UMLClass {
@@ -48,6 +48,26 @@ type AttributeActions =
   | AttributeAddAction
   | AttributeUpdateAction
   | AttributeRemoveAction;
+// action type constructor constructor/*
+type ConstructorAddAction = ActionGenerator<
+  "constructor/add",
+  { id: string; constructor: Constructor }
+>;
+
+type ConstructorUpdateAction = ActionGenerator<
+  "constructor/update",
+  { id: string; constructor: Partial<Constructor>; index: number }
+>;
+
+type ConstructorRemoveAction = ActionGenerator<
+  "constructor/remove",
+  { id: string; index: number }
+>;
+
+type ConstructorActions =
+  | ConstructorAddAction
+  | ConstructorUpdateAction
+  | ConstructorRemoveAction;
 // action type method method/*
 type MethodAddAction = ActionGenerator<
   "method/add",
@@ -77,6 +97,7 @@ export type ClassesAction =
   | ClassActions
   | AttributeActions
   | MethodActions
-  | CoordsActions;
+  | CoordsActions
+  | ConstructorActions;
 
 export type ClassesState = Record<string, UMLClass>;

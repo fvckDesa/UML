@@ -12,13 +12,20 @@ import { useUMLContext } from "@src/contexts/UML";
 import { generateClassCode } from "@src/utils/class";
 // icons
 import { faXmark, faCode } from "@fortawesome/free-solid-svg-icons";
+import ConstructorPanelList from "./ConstructorPanelList";
 
 function ClassPanel() {
   const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
     useUMLContext();
   const { activeClass } = umlInfo;
   const {
-    javaClass = { name: "", isFinal: false, attributes: [], methods: [] },
+    javaClass = {
+      name: "",
+      isFinal: false,
+      attributes: [],
+      constructors: [],
+      methods: [],
+    },
   } = umlClasses[activeClass] ?? {};
 
   useEffect(() => {
@@ -120,6 +127,10 @@ function ClassPanel() {
       </div>
       <AttributePanelList
         attributes={javaClass.attributes}
+        classId={activeClass}
+      />
+      <ConstructorPanelList
+        constructors={javaClass.constructors}
         classId={activeClass}
       />
       <MethodPanelList methods={javaClass.methods} classId={activeClass} />

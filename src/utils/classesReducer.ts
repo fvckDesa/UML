@@ -22,6 +22,9 @@ export function classesReducer(
           javaClass: {
             ...state[id].javaClass,
             name,
+            constructors: state[id].javaClass.constructors.map(
+              (constructor) => ({ ...constructor, name })
+            ),
           },
         },
       };
@@ -84,6 +87,50 @@ export function classesReducer(
           javaClass: {
             ...state[id].javaClass,
             attributes: state[id].javaClass.attributes.filter(
+              (_, i) => i !== index
+            ),
+          },
+        },
+      };
+    }
+    case "constructor/add": {
+      const { id, constructor } = payload;
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          javaClass: {
+            ...state[id].javaClass,
+            constructors: state[id].javaClass.constructors.concat(constructor),
+          },
+        },
+      };
+    }
+    case "constructor/update": {
+      const { id, constructor, index } = payload;
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          javaClass: {
+            ...state[id].javaClass,
+            constructors: state[id].javaClass.constructors.map((attr, i) => {
+              if (i === index) return { ...attr, ...constructor };
+              return attr;
+            }),
+          },
+        },
+      };
+    }
+    case "constructor/remove": {
+      const { id, index } = payload;
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          javaClass: {
+            ...state[id].javaClass,
+            constructors: state[id].javaClass.constructors.filter(
               (_, i) => i !== index
             ),
           },

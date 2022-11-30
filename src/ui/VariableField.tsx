@@ -1,5 +1,5 @@
 // types
-import type { Method, Variable } from "@src/types/class";
+import type { Constructor, Method, Variable } from "@src/types/class";
 import type {
   UseFormRegister,
   Merge,
@@ -15,7 +15,7 @@ import { faLayerGroup, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
   isArray: boolean;
-  register: UseFormRegister<Method>;
+  register: UseFormRegister<Method | Constructor>;
   index: number;
   errors: Merge<FieldError, FieldErrorsImpl<Variable>> | undefined;
   onRemove: (index: number) => void;

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   stringifyAttribute,
   stringifyFinal,
+  stringifyConstructor,
   stringifyMethod,
 } from "@src/utils/class";
 import { useUMLContext } from "@src/contexts/UML";
@@ -22,7 +23,7 @@ function Class({ id, container, onClassSelect }: IProps) {
   const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
     useUMLContext();
   const {
-    javaClass: { name, isFinal, attributes, methods },
+    javaClass: { name, isFinal, attributes, constructors, methods },
     coords,
   } = umlClasses[id];
 
@@ -118,6 +119,15 @@ function Class({ id, container, onClassSelect }: IProps) {
         ))}
       </ul>
       <ul className="min-h-[50px] p-2">
+        {constructors.map((constructor, i) => (
+          <li
+            key={constructor.name + i}
+            className="underline-offset-2"
+            data-testid="constructor"
+          >
+            {stringifyConstructor(constructor)}
+          </li>
+        ))}
         {methods.map((method, i) => (
           <li
             key={method.name + i}

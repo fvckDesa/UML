@@ -23,7 +23,9 @@ function TopBar({ centerCoords = { x: 0, y: 0 } }: IProps) {
         javaClass: {
           name: `Class${Object.keys(umlClasses).length + 1}`,
           attributes: [],
+          constructors: [],
           methods: [],
+          isFinal: false,
         },
         coords: {
           x: centerCoords.x - 100,

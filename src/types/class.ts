@@ -11,14 +11,18 @@ export interface Attribute extends Variable {
   isStatic: boolean;
   isFinal: boolean;
 }
-
-export interface Method extends Attribute {
+export interface Constructor {
+  visibility: Visibility;
+  name: string;
   parameters: Variable[];
 }
+
+export type Method = Attribute & Constructor;
 
 export interface JavaClass {
   name: string;
   isFinal: boolean;
   attributes: Attribute[];
+  constructors: Constructor[];
   methods: Method[];
 }
