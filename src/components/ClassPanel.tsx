@@ -101,7 +101,7 @@ function ClassPanel() {
     <div
       className={`absolute top-0 ${
         activeClass ? "right-0" : "-right-80"
-      } flex flex-col w-80 h-full py-6 border-l-2 border-gray-400 bg-white transition-all`}
+      } flex-1 flex flex-col w-80 h-full py-6 border-l-2 border-gray-400 bg-white transition-all`}
     >
       <header className="flex justify-between items-center px-4 mb-4">
         <h1 className="text-xl">Class:</h1>
@@ -114,27 +114,29 @@ function ClassPanel() {
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </header>
-      <div className="flex flex-col gap-4 px-4 mb-4">
-        <InputField
-          label="Name"
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            handlerNameChange(e.target.value)
-          }
-          value={javaClass.name}
-          error={umlInfo.errors[activeClass]?.message}
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col gap-4 px-4 mb-4">
+          <InputField
+            label="Name"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handlerNameChange(e.target.value)
+            }
+            value={javaClass.name}
+            error={umlInfo.errors[activeClass]?.message}
+          />
+          <CheckboxField text="Final" onChange={handlerFinalChange} />
+        </div>
+        <AttributePanelList
+          attributes={javaClass.attributes}
+          classId={activeClass}
         />
-        <CheckboxField text="Final" onChange={handlerFinalChange} />
+        <ConstructorPanelList
+          constructors={javaClass.constructors}
+          classId={activeClass}
+        />
+        <MethodPanelList methods={javaClass.methods} classId={activeClass} />
       </div>
-      <AttributePanelList
-        attributes={javaClass.attributes}
-        classId={activeClass}
-      />
-      <ConstructorPanelList
-        constructors={javaClass.constructors}
-        classId={activeClass}
-      />
-      <MethodPanelList methods={javaClass.methods} classId={activeClass} />
-      <footer className="flex justify-between items-center px-4 mt-auto">
+      <footer className="flex justify-between items-center p-4 pb-0">
         <button
           className="btnAction w-10 h-10 border opacity-100 border-gray-500 transition-opacity duration-300 disabled:opacity-25 disabled:bg-white"
           type="button"
