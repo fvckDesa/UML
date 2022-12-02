@@ -15,7 +15,7 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
   return (
     <div
       ref={ref}
-      className="relative bg-slate-300"
+      className="relative bg-[length:25px_25px] bg-dot"
       style={{
         width,
         height,
