@@ -3,13 +3,11 @@ import ReactDOM from "react-dom";
 import type { Attribute } from "@src/types/class";
 import type { Modal } from "@src/types/modal";
 // components
-import { InputField, SelectField, CheckboxField, LoaderButton } from "@src/ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { InputField, SelectField, CheckboxField, ModalForm } from "@src/ui";
 // hooks
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-// icon
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+// utils
 import { validation } from "@src/utils/validate";
 
 type IProps = Modal<Attribute>;
@@ -30,82 +28,55 @@ function AttributeModal({ data, onSave, onClose }: IProps) {
     }
   }, [data]);
 
-  function handlerSubmit(newData: Attribute) {
+  function onSubmit(newData: Attribute) {
     onSave(newData);
     onClose();
   }
 
   return ReactDOM.createPortal(
-    <div
-      className="fixed top-0 w-screen h-screen p-5 flex justify-center items-center bg-modal"
-      onClick={() => onClose()}
+    <ModalForm
+      title="attribute"
+      isLoading={isSubmitting}
+      onSubmit={handleSubmit(onSubmit)}
+      onClose={onClose}
     >
-      <form
-        className="w-80 rounded-xl bg-white"
-        onSubmit={handleSubmit(handlerSubmit)}
-        onClick={(e) => e.stopPropagation()}
+      <SelectField
+        label="Visibility"
+        {...register("visibility", { value: "public" })}
       >
-        <header className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
-          <h1 className="text-lg font-semibold uppercase" data-testid="title">
-            Attribute
-          </h1>
-          <button
-            className="w-8 h-8 btnAction"
-            type="button"
-            onClick={() => onClose()}
-            data-testid="close-btn"
-          >
-            <FontAwesomeIcon icon={faXmark} />
-          </button>
-        </header>
-        <div className="flex flex-col gap-2 p-6">
-          <SelectField
-            label="Visibility"
-            {...register("visibility", { value: "public" })}
-          >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-            <option value="protected">Protected</option>
-            <option value="package">Package</option>
-          </SelectField>
-          <InputField
-            label="Name"
-            error={errors.name?.message}
-            {...register("name", {
-              required: `Name of attribute is required`,
-              validate: {
-                ...validation("name"),
-              },
-            })}
-          />
-          <InputField
-            label={"Type"}
-            error={errors.type?.message}
-            {...register("type", {
-              required: `${"Type"} is required`,
-              validate: {
-                ...validation("type"),
-              },
-            })}
-          />
-          <CheckboxField
-            text={`Array of ${watch("type") ?? ""}`}
-            {...register("isArray")}
-          />
-          <CheckboxField text="Static" {...register("isStatic")} />
-          <CheckboxField text="Final" {...register("isFinal")} />
-        </div>
-        <footer className="px-4 py-2 border-t border-gray-300">
-          <LoaderButton
-            className="ml-auto border border-slate-300 rounded-md "
-            loading={isSubmitting}
-          >
-            Save
-          </LoaderButton>
-        </footer>
-      </form>
-    </div>,
-    document.getElementById("class-modal") as HTMLDivElement
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+        <option value="protected">Protected</option>
+        <option value="package">Package</option>
+      </SelectField>
+      <InputField
+        label="Name"
+        error={errors.name?.message}
+        {...register("name", {
+          required: `Name of attribute is required`,
+          validate: {
+            ...validation("name"),
+          },
+        })}
+      />
+      <InputField
+        label={"Type"}
+        error={errors.type?.message}
+        {...register("type", {
+          required: `${"Type"} is required`,
+          validate: {
+            ...validation("type"),
+          },
+        })}
+      />
+      <CheckboxField
+        text={`Array of ${watch("type") ?? ""}`}
+        {...register("isArray")}
+      />
+      <CheckboxField text="Static" {...register("isStatic")} />
+      <CheckboxField text="Final" {...register("isFinal")} />
+    </ModalForm>,
+    document.getElementById("modal") as HTMLDivElement
   );
 }
 

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import type { Constructor } from "@src/types/class";
 import type { Modal } from "@src/types/modal";
 // components
-import { SelectField, LoaderButton, VariableField } from "@src/ui";
+import { SelectField, LoaderButton, VariableField, ModalForm } from "@src/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
 import { useForm, useFieldArray } from "react-hook-form";
@@ -59,7 +59,7 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
     append({ name: "", type: "", isArray: false });
   }
 
-  function handlerSubmit(newData: Constructor) {
+  function onSubmit(newData: Constructor) {
     onSave({
       ...newData,
       name: umlClasses[umlInfo.activeClass].javaClass.name,
@@ -73,81 +73,54 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
   }
 
   return ReactDOM.createPortal(
-    <div
-      className="fixed top-0 w-screen h-screen p-5 flex justify-center items-center bg-modal"
-      onClick={() => onClose()}
+    <ModalForm
+      title="constructor"
+      isLoading={isSubmitting}
+      onSubmit={handleSubmit(onSubmit)}
+      onClose={onClose}
     >
-      <form
-        className="w-80 rounded-xl bg-white"
-        onSubmit={handleSubmit(handlerSubmit)}
-        onClick={(e) => e.stopPropagation()}
+      <SelectField
+        label="Visibility"
+        {...register("visibility", { value: "public" })}
       >
-        <header className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
-          <h1 className="text-lg font-semibold uppercase" data-testid="title">
-            Constructor
-          </h1>
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+        <option value="protected">Protected</option>
+        <option value="package">Package</option>
+      </SelectField>
+      <div className="overflow-x-hidden">
+        <header className="flex justify-between items-center p-1">
+          <h2>Parameters</h2>
           <button
-            className="w-8 h-8 btnAction"
+            className="btnAction w-6 h-6"
             type="button"
-            onClick={() => onClose()}
-            data-testid="close-btn"
+            onClick={handlerAppend}
+            data-testid="add-parameter"
           >
-            <FontAwesomeIcon icon={faXmark} />
+            <FontAwesomeIcon icon={faPlus} />
           </button>
         </header>
-        <div className="flex flex-col gap-2 p-6">
-          <SelectField
-            label="Visibility"
-            {...register("visibility", { value: "public" })}
-          >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-            <option value="protected">Protected</option>
-            <option value="package">Package</option>
-          </SelectField>
-          <div className="overflow-x-hidden">
-            <header className="flex justify-between items-center p-1">
-              <h2>Parameters</h2>
-              <button
-                className="btnAction w-6 h-6"
-                type="button"
-                onClick={handlerAppend}
-                data-testid="add-parameter"
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
-            </header>
-            <ul
-              ref={listRef}
-              className={`flex flex-col items-center gap-2 max-h-[120px] p-2 !pr-[50px] border-t-2 ${
-                !isTop ? "border-blue-500" : "border-transparent"
-              } mr-[-50px] overflow-y-scroll scroll-smooth`}
-              onScroll={handlerParametersScroll}
-            >
-              {fields.map((field, i) => (
-                <VariableField
-                  key={field.id}
-                  isArray={watch(`parameters.${i}.isArray`)}
-                  register={register}
-                  index={i}
-                  errors={errors.parameters?.[i]}
-                  onRemove={remove}
-                />
-              ))}
-            </ul>
-          </div>
-        </div>
-        <footer className="px-4 py-2 border-t border-gray-300">
-          <LoaderButton
-            className="ml-auto border border-slate-300 rounded-md "
-            loading={isSubmitting}
-          >
-            Save
-          </LoaderButton>
-        </footer>
-      </form>
-    </div>,
-    document.getElementById("class-modal") as HTMLDivElement
+        <ul
+          ref={listRef}
+          className={`flex flex-col items-center gap-2 max-h-[120px] p-2 !pr-[50px] border-t-2 ${
+            !isTop ? "border-blue-500" : "border-transparent"
+          } mr-[-50px] overflow-y-scroll scroll-smooth`}
+          onScroll={handlerParametersScroll}
+        >
+          {fields.map((field, i) => (
+            <VariableField
+              key={field.id}
+              isArray={watch(`parameters.${i}.isArray`)}
+              register={register}
+              index={i}
+              errors={errors.parameters?.[i]}
+              onRemove={remove}
+            />
+          ))}
+        </ul>
+      </div>
+    </ModalForm>,
+    document.getElementById("modal") as HTMLDivElement
   );
 }
 
