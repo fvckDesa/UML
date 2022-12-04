@@ -7,7 +7,12 @@
     @apply opacity-70 rounded transition-all hover:bg-gray-200 hover:opacity-100;
   }
 
+  [data-grabbing="true"],
   [data-grabbing="true"] * {
     cursor: grabbing;
+  }
+
+  .isDownloading .javaClass {
+    @apply border-2 border-gray-400;
   }
 }

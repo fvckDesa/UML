@@ -2,6 +2,7 @@
 import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
 // hooks
 import { useCallback, useEffect, useRef } from "react";
+import { useUMLContext } from "@src/contexts/UML";
 // utils
 import {
   stringifyAttribute,
@@ -9,7 +10,6 @@ import {
   stringifyConstructor,
   stringifyMethod,
 } from "@src/utils/class";
-import { useUMLContext } from "@src/contexts/UML";
 
 interface IProps {
   id: string;
@@ -85,11 +85,11 @@ function Class({ id, container, onClassSelect }: IProps) {
     <div
       data-class-id={id}
       ref={classRef}
-      className={`absolute min-w-[200px] w-fit ${
+      className={`javaClass absolute min-w-[200px] w-fit ${
         umlInfo.errors[id]
           ? "border-4 border-red-500"
           : umlInfo.activeClass === id
-          ? "border-4 border-blue-500"
+          ? "border-4 border-blue-500 shadow-lg"
           : "border-2 border-gray-400"
       } rounded-lg overflow-hidden font-medium cursor-pointer bg-white transition-border duration-300`}
       style={{

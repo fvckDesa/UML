@@ -1,48 +1,48 @@
-// type
-import type { Coords } from "@src/types/general";
+// types
+import { DownloadInfo } from "@src/types/general";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// icons
-import { faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
+import DownloadModal from "./DownloadModal";
+// hooks
 import { useUMLContext } from "@src/contexts/UML";
-// uuid
-import { v4 as uuid } from "uuid";
+import { useState } from "react";
+// icons
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+// utils
+import { saveAsPNG, saveAsJPG, saveAsPDF } from "@src/utils/download";
 
-interface IProps {
-  centerCoords?: Coords;
-}
+function TopBar() {
+  const {} = useUMLContext();
+  const [isOpen, setIsOpen] = useState(false);
 
-function TopBar({ centerCoords = { x: 0, y: 0 } }: IProps) {
-  const { umlClasses, dispatchClasses, dispatchInfo } = useUMLContext();
+  async function handlerSave({ fileType, name }: DownloadInfo) {
+    const workspace = document.querySelector("#workspace") as HTMLElement;
+    let fn;
 
-  function handlerAddClass() {
-    const id = uuid();
-    dispatchClasses({
-      type: "class/add",
-      payload: {
-        javaClass: {
-          name: `Class${Object.keys(umlClasses).length + 1}`,
-          attributes: [],
-          constructors: [],
-          methods: [],
-          isFinal: false,
-        },
-        coords: {
-          x: centerCoords.x - 100,
-          y: centerCoords.y - 75,
-        },
-        id,
-      },
-    });
+    switch (fileType) {
+      case "png":
+        fn = saveAsPNG;
+        break;
+      case "jpg":
+        fn = saveAsJPG;
+        break;
+      case "pdf":
+        fn = saveAsPDF;
+        break;
+    }
 
-    dispatchInfo({ type: "activeClass/change", payload: { id } });
+    await fn(workspace, name);
+    setIsOpen(false);
   }
 
   return (
     <header className="flex items-center w-full h-12 p-2 border-b-2 border-gray-600">
-      <button className="btnAction w-8 h-8" onClick={handlerAddClass}>
-        <FontAwesomeIcon icon={faWindowMaximize} />
+      <button className="btnAction w-8 h-8" onClick={() => setIsOpen(true)}>
+        <FontAwesomeIcon icon={faDownload} />
       </button>
+      {isOpen && (
+        <DownloadModal onSave={handlerSave} onClose={() => setIsOpen(false)} />
+      )}
     </header>
   );
 }
