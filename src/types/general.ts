@@ -7,3 +7,13 @@ export interface ActionGenerator<Type extends string, Payload extends {}> {
   type: Type;
   payload: Payload;
 }
+
+export interface Dimensions {
+  width: number;
+  height: number;
+}
+
+export interface DownloadInfo {
+  fileType: "png" | "jpg" | "pdf";
+  name: string;
+}

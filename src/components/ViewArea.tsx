@@ -1,14 +1,10 @@
 // types
-import { useUMLContext } from "@src/contexts/UML";
-import type { Coords } from "@src/types/general";
 import type { MouseEvent } from "react";
+// components
+import WorkSpace from "./WorkSpace";
 // hooks
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import WorkSpace from "./WorkSpace";
-
-interface IProps {
-  onCenterChange: (newCenter: Coords) => void;
-}
+import { useUMLContext } from "@src/contexts/UML";
 
 interface AreaPos {
   top: number;
@@ -17,7 +13,7 @@ interface AreaPos {
   y: number;
 }
 
-function ViewArea({ onCenterChange }: IProps) {
+function ViewArea() {
   const { umlInfo } = useUMLContext();
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<AreaPos | null>(null);
@@ -53,7 +49,7 @@ function ViewArea({ onCenterChange }: IProps) {
       behavior: "smooth",
     });
   }
-  // change center coords
+  /* // change center coords
   function handlerScroll() {
     if (!ref.current) return;
     const el = ref.current;
@@ -61,7 +57,7 @@ function ViewArea({ onCenterChange }: IProps) {
       x: el.scrollLeft + el.clientWidth / 2,
       y: el.scrollTop + el.clientHeight / 2,
     });
-  }
+  } */
   // active class in panel and center class
   function handlerActiveClass(id: string) {
     const el = ref.current;
@@ -85,8 +81,8 @@ function ViewArea({ onCenterChange }: IProps) {
   }
 
   function handlerRoleDown(e: MouseEvent) {
-    e.preventDefault();
     if (e.button != 1 || !ref.current) return;
+    e.preventDefault();
 
     setPos({
       left: ref.current.scrollLeft,
@@ -114,7 +110,6 @@ function ViewArea({ onCenterChange }: IProps) {
       className={`h-full ${
         umlInfo.activeClass ? "mr-80" : "mr-0"
       } transition-all overflow-hidden`}
-      onScroll={handlerScroll}
       onMouseDown={handlerRoleDown}
       onMouseMove={handlerMouseMove}
     >
