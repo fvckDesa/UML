@@ -6,6 +6,7 @@ import type {
   JavaClass,
   Constructor,
 } from "@src/types/class";
+import { MAIN_METHOD } from "@src/data/class";
 
 function convertVisibility(visibility: Visibility): string | never {
   switch (visibility) {
@@ -87,8 +88,10 @@ export function generateClassCode({
   attributes,
   constructors,
   methods,
+  isFinal,
+  haveMain,
 }: JavaClass): string {
-  let code = `public class ${name} {\n\t`;
+  let code = `public ${isFinal ? "final " : ""}class ${name} {\n\t`;
 
   code += attributes
     .map(
@@ -113,6 +116,7 @@ export function generateClassCode({
   code += "\t\n\t\n\t";
 
   code += methods
+    .concat(haveMain ? MAIN_METHOD : [])
     .map(
       ({ visibility, isStatic, isFinal, type, isArray, name, parameters }) =>
         `${visibility} ${isStatic ? "static " : ""}${

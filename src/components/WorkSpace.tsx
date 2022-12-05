@@ -40,6 +40,7 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
             constructors: [],
             methods: [],
             isFinal: false,
+            haveMain: false,
           },
           coords: {
             x: Math.abs(x) + e.clientX - width / 2,

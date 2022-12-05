@@ -54,7 +54,7 @@ function ActionBar() {
             isOpen ? "right-0" : ""
           } w-8 h-8 rounded-full opacity-60 cursor-grab transition-all hover:opacity-100 active:cursor-grabbing`}
           draggable="true"
-          onDragStart={handlerDragStart({ width: 200, height: 154 }, ClassSvg)}
+          onDragStart={handlerDragStart({ width: 220, height: 154 }, ClassSvg)}
         >
           <img src={ClassIcon} alt="Java class icon" />
         </button>

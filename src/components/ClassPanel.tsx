@@ -22,16 +22,12 @@ function ClassPanel() {
     javaClass = {
       name: "",
       isFinal: false,
+      haveMain: false,
       attributes: [],
       constructors: [],
       methods: [],
     },
   } = umlClasses[activeClass] ?? {};
-
-  useEffect(() => {
-    if (!activeClass) return;
-    handlerNameChange(javaClass.name);
-  }, [activeClass]);
 
   function handlerClose() {
     dispatchInfo({ type: "activeClass/change", payload: { id: "" } });
@@ -80,6 +76,13 @@ function ClassPanel() {
     });
   }
 
+  function handlerMainChange(e: ChangeEvent<HTMLInputElement>) {
+    dispatchClasses({
+      type: "class/main",
+      payload: { id: activeClass, haveMain: e.target.checked },
+    });
+  }
+
   function handlerDelete() {
     dispatchClasses({ type: "class/remove", payload: { id: activeClass } });
     handlerClose();
@@ -124,7 +127,16 @@ function ClassPanel() {
             value={javaClass.name}
             error={umlInfo.errors[activeClass]?.message}
           />
-          <CheckboxField text="Final" onChange={handlerFinalChange} />
+          <CheckboxField
+            text="Final"
+            onChange={handlerFinalChange}
+            checked={javaClass.isFinal}
+          />
+          <CheckboxField
+            text="Main"
+            onChange={handlerMainChange}
+            checked={javaClass.haveMain}
+          />
         </div>
         <AttributePanelList
           attributes={javaClass.attributes}

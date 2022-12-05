@@ -25,4 +25,5 @@ export interface JavaClass {
   attributes: Attribute[];
   constructors: Constructor[];
   methods: Method[];
+  haveMain: boolean;
 }

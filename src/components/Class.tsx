@@ -10,6 +10,8 @@ import {
   stringifyConstructor,
   stringifyMethod,
 } from "@src/utils/class";
+// data
+import { MAIN_METHOD } from "@src/data/class";
 
 interface IProps {
   id: string;
@@ -23,7 +25,7 @@ function Class({ id, container, onClassSelect }: IProps) {
   const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
     useUMLContext();
   const {
-    javaClass: { name, isFinal, attributes, constructors, methods },
+    javaClass: { name, isFinal, haveMain, attributes, constructors, methods },
     coords,
   } = umlClasses[id];
 
@@ -85,11 +87,11 @@ function Class({ id, container, onClassSelect }: IProps) {
     <div
       data-class-id={id}
       ref={classRef}
-      className={`javaClass absolute min-w-[200px] w-fit ${
-        umlInfo.errors[id]
-          ? "border-4 border-red-500"
-          : umlInfo.activeClass === id
+      className={`javaClass absolute min-w-[220px] w-fit ${
+        umlInfo.activeClass === id
           ? "border-4 border-blue-500 shadow-lg"
+          : umlInfo.errors[id]
+          ? "border-4 border-red-500"
           : "border-2 border-gray-400"
       } rounded-lg overflow-hidden font-medium cursor-pointer bg-white transition-border duration-300`}
       style={{
@@ -128,6 +130,11 @@ function Class({ id, container, onClassSelect }: IProps) {
             {stringifyConstructor(constructor)}
           </li>
         ))}
+        {haveMain && (
+          <li className="underline underline-offset-2">
+            {stringifyMethod(MAIN_METHOD)}
+          </li>
+        )}
         {methods.map((method, i) => (
           <li
             key={method.name + i}
