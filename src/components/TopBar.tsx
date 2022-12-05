@@ -12,7 +12,7 @@ import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { saveAsPNG, saveAsJPG, saveAsPDF } from "@src/utils/download";
 
 function TopBar() {
-  const {} = useUMLContext();
+  const { umlInfo } = useUMLContext();
   const [isOpen, setIsOpen] = useState(false);
 
   async function handlerSave({ fileType, name }: DownloadInfo) {
@@ -37,12 +37,19 @@ function TopBar() {
 
   return (
     <header className="flex items-center w-full h-12 p-2 border-b-2 border-gray-600">
-      <button className="btnAction w-8 h-8" onClick={() => setIsOpen(true)}>
+      <button
+        className="btnAction w-8 h-8"
+        onClick={() => setIsOpen(true)}
+        disabled={Object.values(umlInfo.errors).length > 0}
+      >
         <FontAwesomeIcon icon={faDownload} />
+        {isOpen && (
+          <DownloadModal
+            onSave={handlerSave}
+            onClose={() => setIsOpen(false)}
+          />
+        )}
       </button>
-      {isOpen && (
-        <DownloadModal onSave={handlerSave} onClose={() => setIsOpen(false)} />
-      )}
     </header>
   );
 }

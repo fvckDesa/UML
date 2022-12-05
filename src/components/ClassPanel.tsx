@@ -150,7 +150,7 @@ function ClassPanel() {
       </div>
       <footer className="flex justify-between items-center p-4 pb-0">
         <button
-          className="btnAction w-10 h-10 border opacity-100 border-gray-500 transition-opacity duration-300 disabled:opacity-25 disabled:bg-white"
+          className="btnAction w-10 h-10 border opacity-100 border-gray-500 transition-opacity duration-300"
           type="button"
           onClick={handlerCode}
           data-testid="code-btn"
