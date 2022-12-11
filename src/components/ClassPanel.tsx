@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AttributePanelList from "./AttributePanelList";
 import MethodPanelList from "./MethodPanelList";
 // hooks
-import { useEffect } from "react";
 import { useUMLContext } from "@src/contexts/UML";
 // utils
 import { generateClassCode } from "@src/utils/class";

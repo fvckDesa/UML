@@ -5,11 +5,20 @@ interface IProps {
 }
 
 function Arrow({ id }: IProps) {
-  const { umlArrows, umlClasses } = useUMLContext();
+  const { umlArrows, umlClasses, umlInfo, dispatchArrow } = useUMLContext();
 
   const [class1, class2] = umlArrows.arrows[id].nodes.map((node) =>
     node ? umlClasses[node] : null
   );
+
+  function handlerClick() {
+    if (umlInfo.clickEvent?.type === "delete") {
+      dispatchArrow({
+        type: "arrow/remove",
+        payload: { id },
+      });
+    }
+  }
 
   if (!class1?.ref || !class2?.ref) return null;
 
@@ -21,7 +30,9 @@ function Arrow({ id }: IProps) {
         x2={class2.coords.x + class2.ref.scrollWidth / 2}
         y2={class2.coords.y + class2.ref.scrollHeight / 2}
         stroke="black"
-        strokeWidth={3}
+        strokeWidth={4}
+        className="hover:cursor-pointer"
+        onClick={handlerClick}
       />
     </g>
   );

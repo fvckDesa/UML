@@ -1,4 +1,4 @@
-type Relationships =
+export type Relationships =
   | "inheritance"
   | "association"
   | "aggregation"

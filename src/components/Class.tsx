@@ -11,10 +11,9 @@ import {
   stringifyConstructor,
   stringifyMethod,
 } from "@src/utils/class";
+import { dispatchNewArrow } from "@src/utils/dispatch";
 // data
 import { MAIN_METHOD } from "@src/data/class";
-// uuid
-import { v4 as uuid } from "uuid";
 
 interface IProps {
   id: string;
@@ -109,30 +108,27 @@ function Class({ id, container, onClassSelect }: IProps) {
   }
 
   function handlerClick() {
-    if (umlInfo.clickEvent?.type === "arrow") {
-      if (umlArrows.newArrow && umlArrows.newArrow !== id) {
-        dispatchArrow({
-          type: "arrow/add",
-          payload: {
-            id: uuid(),
-            arrow: {
-              relationship: "association",
-              nodes: [umlArrows.newArrow, id],
-            },
-          },
+    switch (umlInfo.clickEvent?.type) {
+      case "arrow": {
+        return dispatchNewArrow({
+          dispatch: dispatchArrow,
+          id,
+          node: umlArrows.newArrow,
+          relationship: "association",
         });
-        dispatchArrow({
-          type: "arrow/cancel",
-          payload: {},
-        });
-        return;
       }
-      dispatchArrow({
-        type: "arrow/new",
-        payload: {
-          node: id,
-        },
-      });
+      case "delete": {
+        if (umlInfo.activeClass === id) {
+          dispatchInfo({
+            type: "activeClass/change",
+            payload: { id: "" },
+          });
+        }
+        return dispatchClasses({
+          type: "class/remove",
+          payload: { id },
+        });
+      }
     }
   }
 

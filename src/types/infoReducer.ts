@@ -23,6 +23,7 @@ type ClickEventGenerator<
 export type ClickEvents =
   | ClickEventGenerator<"arrow">
   | ClickEventGenerator<"element", ElementsKeys>
+  | ClickEventGenerator<"delete">
   | null;
 
 type CLickEventAction = ActionGenerator<
