@@ -5,7 +5,7 @@ import type { ClickEvents } from "@src/types/infoReducer";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // icons
 import { ClassSvg, ClassIcon } from "@src/assets";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,17 @@ import { useUMLContext } from "@src/contexts/UML";
 function ActionBar() {
   const [isOpen, setIsOpen] = useState(false);
   const { umlInfo, dispatchInfo } = useUMLContext();
+
+  useEffect(() => {
+    if (isOpen === false && umlInfo.clickEvent?.type === "element") {
+      dispatchInfo({
+        type: "clickEvent/change",
+        payload: {
+          clickEvent: null,
+        },
+      });
+    }
+  }, [isOpen]);
 
   function handlerDragStart(element: ElementsKeys, img: string) {
     const { width, height } = UML_ELEMENTS[element];
