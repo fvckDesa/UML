@@ -17,19 +17,18 @@
     @apply opacity-40 hover:bg-transparent;
   }
 
-  [data-grabbing="true"],
-  [data-grabbing="true"] * {
-    @apply cursor-grabbing;
-  }
-
-  [data-click-event="arrow"] * {
-    @apply cursor-copy;
-  }
-
+  [data-click-event="arrow"] *,
   [data-click-event="element"] * {
     @apply cursor-crosshair;
   }
 
+  [data-click-event="move"] * {
+    @apply cursor-grab;
+  }
+
+  [data-grabbing="true"] * {
+    @apply cursor-grabbing;
+  }
   .isDownloading .javaClass {
     @apply border-2 border-gray-400;
   }

@@ -8,7 +8,12 @@ import DownloadModal from "./DownloadModal";
 import { useUMLContext } from "@src/contexts/UML";
 import { useState } from "react";
 // icons
-import { faDownload, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDownload,
+  faTrashCan,
+  faArrowTrendUp,
+  faArrowsUpDownLeftRight,
+} from "@fortawesome/free-solid-svg-icons";
 // utils
 import { saveAsPNG, saveAsJPG, saveAsPDF } from "@src/utils/download";
 
@@ -59,7 +64,7 @@ function TopBar() {
           } transition-colors`}
           onClick={handlerActive({ type: "arrow" })}
         >
-          Arr
+          <FontAwesomeIcon icon={faArrowTrendUp} />
         </button>
         <button
           className={`btnAction w-8 h-8 ${
@@ -70,6 +75,16 @@ function TopBar() {
           onClick={handlerActive({ type: "delete" })}
         >
           <FontAwesomeIcon icon={faTrashCan} />
+        </button>
+        <button
+          className={`btnAction w-8 h-8 ${
+            umlInfo.clickEvent?.type === "move"
+              ? "bg-blue-500 text-white hover:opacity-100 hover:bg-blue-700"
+              : ""
+          } transition-colors`}
+          onClick={handlerActive({ type: "move" })}
+        >
+          <FontAwesomeIcon icon={faArrowsUpDownLeftRight} />
         </button>
       </div>
       <div className="flex justify-center items-center gap-2">

@@ -66,7 +66,8 @@ function ViewArea() {
   }
 
   function handlerRoleDown(e: MouseEvent) {
-    if (e.button != 1 || !ref.current) return;
+    if ((umlInfo.clickEvent?.type !== "move" && e.button != 1) || !ref.current)
+      return;
     e.preventDefault();
 
     setPos({
@@ -98,6 +99,7 @@ function ViewArea() {
       } transition-all overflow-hidden`}
       onMouseDown={handlerRoleDown}
       onMouseMove={handlerMouseMove}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <WorkSpace
         width={3000}
