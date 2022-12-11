@@ -5,6 +5,7 @@ import WorkSpace from "./WorkSpace";
 // hooks
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useUMLContext } from "@src/contexts/UML";
+import { Coords } from "@src/types/general";
 
 interface AreaPos {
   top: number;
@@ -37,44 +38,28 @@ function ViewArea() {
 
     return () => window.removeEventListener("mouseup", removePos);
   }, []);
-  // scroll to current class passed as target parameter
-  function scrollTo(el: HTMLDivElement, target: HTMLDivElement) {
-    const { width: elWidth, height: elHeight } = el.getBoundingClientRect();
-    const { width, height } = target.getBoundingClientRect();
-    const { top, left } = getComputedStyle(target);
-
-    el.scrollTo({
-      left: parseFloat(left) - elWidth / 2 + width / 2,
-      top: parseFloat(top) - elHeight / 2 + height / 2,
-      behavior: "smooth",
-    });
-  }
-  /* // change center coords
-  function handlerScroll() {
-    if (!ref.current) return;
-    const el = ref.current;
-    onCenterChange({
-      x: el.scrollLeft + el.clientWidth / 2,
-      y: el.scrollTop + el.clientHeight / 2,
-    });
-  } */
   // active class in panel and center class
-  function handlerActiveClass(id: string) {
+  function handlerActiveClass({ x, y }: Coords) {
     const el = ref.current;
-    const target = document.querySelector<HTMLDivElement>(
-      `[data-class-id="${id}"]`
-    );
+    if (!el) return;
 
-    if (!el || !target) return;
+    function scrollTo() {
+      if (!el) return;
+      const { width, height } = el?.getBoundingClientRect();
+      el?.scrollTo({
+        top: y - height / 2,
+        left: x - width / 2,
+        behavior: "smooth",
+      });
+    }
 
     function scrollToTarget() {
-      if (!el || !target) return;
-      scrollTo(el, target);
-      el.removeEventListener("transitionend", scrollToTarget);
+      scrollTo();
+      el?.removeEventListener("transitionend", scrollToTarget);
     }
 
     if (el.classList.contains("mr-80")) {
-      scrollTo(el, target);
+      scrollTo();
     } else {
       el.addEventListener("transitionend", scrollToTarget);
     }
@@ -107,7 +92,8 @@ function ViewArea() {
     <div
       ref={ref}
       data-grabbing={!!pos}
-      className={`h-full ${
+      data-click-event={umlInfo.clickEvent}
+      className={`relative h-full ${
         umlInfo.activeClass ? "mr-80" : "mr-0"
       } transition-all overflow-hidden`}
       onMouseDown={handlerRoleDown}

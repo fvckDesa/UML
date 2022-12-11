@@ -26,15 +26,11 @@ function ActionBar() {
     };
   }
 
-  function handlerClick() {
-    setIsOpen((prev) => !prev);
-  }
-
   return (
     <div className="absolute bottom-8 left-8">
       <button
         className="absolute top-1/2 left-0 -translate-y-1/2 flex justify-center items-center w-16 h-16 rounded-full bg-slate-500 transition-colors z-10 hover:bg-slate-400 shadow-lg"
-        onClick={handlerClick}
+        onClick={() => setIsOpen((prev) => !prev)}
       >
         <FontAwesomeIcon
           className={`w-8 h-8 transition-all duration-500 ${

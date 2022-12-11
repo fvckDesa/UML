@@ -10,7 +10,7 @@ export function classesReducer(
       const { id, ...umlClass } = payload;
       return {
         ...state,
-        [id]: umlClass,
+        [id]: { ...umlClass, ref: null },
       };
     }
     case "class/name": {
@@ -199,6 +199,16 @@ export function classesReducer(
         [id]: {
           ...state[id],
           coords,
+        },
+      };
+    }
+    case "ref/update": {
+      const { id, ref } = payload;
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          ref,
         },
       };
     }

@@ -7,6 +7,13 @@ type ActiveClassChange = ActionGenerator<
   }
 >;
 
+export type ClickEvents = "arrow" | null;
+
+type CLickEventAction = ActionGenerator<
+  "clickEvent/change",
+  { clickEvent: ClickEvents }
+>;
+
 interface Error {
   type: string;
   message: string;
@@ -24,9 +31,10 @@ type ErrorRemove = ActionGenerator<"error/remove", { id: string }>;
 
 type ErrorActions = ErrorChange | ErrorRemove;
 
-export type InfoAction = ActiveClassChange | ErrorActions;
+export type InfoAction = ActiveClassChange | ErrorActions | CLickEventAction;
 
 export interface InfoState {
   activeClass: string;
   errors: Record<string, Error>;
+  clickEvent: ClickEvents;
 }

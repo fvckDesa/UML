@@ -1,5 +1,6 @@
 // types
 import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
+import type { Coords } from "@src/types/general";
 // hooks
 import { useCallback, useEffect, useRef } from "react";
 import { useUMLContext } from "@src/contexts/UML";
@@ -12,18 +13,26 @@ import {
 } from "@src/utils/class";
 // data
 import { MAIN_METHOD } from "@src/data/class";
+// uuid
+import { v4 as uuid } from "uuid";
 
 interface IProps {
   id: string;
   container?: RefObject<HTMLDivElement>;
-  onClassSelect: (id: string) => void;
+  onClassSelect: (centerCoords: Coords) => void;
 }
 
 function Class({ id, container, onClassSelect }: IProps) {
   const grabPoint = useRef({ x: 0, y: 0 });
   const classRef = useRef<HTMLDivElement>(null);
-  const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
-    useUMLContext();
+  const {
+    umlClasses,
+    dispatchClasses,
+    umlInfo,
+    dispatchInfo,
+    umlArrows,
+    dispatchArrow,
+  } = useUMLContext();
   const {
     javaClass: { name, isFinal, haveMain, attributes, constructors, methods },
     coords,
@@ -66,40 +75,82 @@ function Class({ id, container, onClassSelect }: IProps) {
     };
   }, [handlerMouseMove]);
 
-  function handlerMouseDown(e: ReactMouseEvent) {
-    if (!classRef.current || e.button == 1) return;
+  useEffect(() => {
+    dispatchClasses({
+      type: "ref/update",
+      payload: {
+        id,
+        ref: classRef.current,
+      },
+    });
+  }, [classRef]);
 
-    const { top, left } = getComputedStyle(classRef.current);
+  function handlerMouseDown(e: ReactMouseEvent) {
+    e.preventDefault();
+    if (!classRef.current || e.button == 1 || umlInfo.clickEvent) return;
+
     grabPoint.current = {
-      x: e.clientX - parseFloat(left),
-      y: e.clientY - parseFloat(top),
+      x: e.clientX - coords.x,
+      y: e.clientY - coords.y,
     };
 
     window.addEventListener("mousemove", handlerMouseMove);
   }
 
   function handlerClassSelect() {
-    onClassSelect(id);
+    if (!classRef.current) return;
+    const { width, height } = classRef.current.getBoundingClientRect();
+    onClassSelect({
+      x: coords.x + width / 2,
+      y: coords.y + height / 2,
+    });
+
     dispatchInfo({ type: "activeClass/change", payload: { id } });
+  }
+
+  function handlerClick() {
+    if (umlInfo.clickEvent === "arrow") {
+      if (umlArrows.newArrow && umlArrows.newArrow !== id) {
+        dispatchArrow({
+          type: "arrow/add",
+          payload: {
+            id: uuid(),
+            arrow: {
+              relationship: "association",
+              nodes: [umlArrows.newArrow, id],
+            },
+          },
+        });
+        dispatchArrow({
+          type: "arrow/cancel",
+          payload: {},
+        });
+        return;
+      }
+      dispatchArrow({
+        type: "arrow/new",
+        payload: {
+          node: id,
+        },
+      });
+    }
   }
 
   return (
     <div
-      data-class-id={id}
       ref={classRef}
-      className={`javaClass absolute min-w-[220px] w-fit ${
+      data-class-id={id}
+      style={{ top: coords.y, left: coords.x }}
+      className={`javaClass absolute min-w-[220px] w-max ${
         umlInfo.activeClass === id
           ? "border-4 border-blue-500 shadow-lg"
           : umlInfo.errors[id]
           ? "border-4 border-red-500"
           : "border-2 border-gray-400"
       } rounded-lg overflow-hidden font-medium cursor-pointer bg-white transition-border duration-300`}
-      style={{
-        top: `${coords.y}px`,
-        left: `${coords.x}px`,
-      }}
       onMouseDown={handlerMouseDown}
       onDoubleClick={handlerClassSelect}
+      onClick={handlerClick}
     >
       <h1
         className="text-lg text-center font-semibold p-2 border-b-2 border-gray-400 bg-gray-200"

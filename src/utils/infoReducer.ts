@@ -26,6 +26,12 @@ export function infoReducer(state: InfoState, action: InfoAction): InfoState {
         errors,
       };
     }
+    case "clickEvent/change": {
+      return {
+        ...state,
+        clickEvent: payload.clickEvent,
+      };
+    }
     default: {
       return state;
     }

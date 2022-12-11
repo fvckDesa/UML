@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  button {
+    @apply outline-none;
+  }
+}
+
 @layer components {
   .btnAction {
     @apply opacity-70 rounded transition-all hover:bg-gray-200 hover:opacity-100;
@@ -13,7 +19,11 @@
 
   [data-grabbing="true"],
   [data-grabbing="true"] * {
-    cursor: grabbing;
+    @apply cursor-grabbing;
+  }
+
+  [data-click-event="arrow"] * {
+    @apply cursor-copy;
   }
 
   .isDownloading .javaClass {

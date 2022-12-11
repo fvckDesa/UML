@@ -1,9 +1,11 @@
+import { RefObject } from "react";
 import type { JavaClass, Attribute, Method, Constructor } from "./class";
 import type { Coords, ActionGenerator } from "./general";
 
 export interface UMLClass {
   javaClass: JavaClass;
   coords: Coords;
+  ref: HTMLDivElement | null;
 }
 // action type class/*
 type ClassAddAction = ActionGenerator<
@@ -99,11 +101,17 @@ type CoordsUpdateAction = ActionGenerator<
 
 type CoordsActions = CoordsUpdateAction;
 
+type RefAction = ActionGenerator<
+  "ref/update",
+  { id: string; ref: HTMLDivElement | null }
+>;
+
 export type ClassesAction =
   | ClassActions
   | AttributeActions
   | MethodActions
   | CoordsActions
-  | ConstructorActions;
+  | ConstructorActions
+  | RefAction;
 
 export type ClassesState = Record<string, UMLClass>;

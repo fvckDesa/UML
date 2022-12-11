@@ -15,8 +15,14 @@ import { faXmark, faCode } from "@fortawesome/free-solid-svg-icons";
 import ConstructorPanelList from "./ConstructorPanelList";
 
 function ClassPanel() {
-  const { umlClasses, dispatchClasses, umlInfo, dispatchInfo } =
-    useUMLContext();
+  const {
+    umlClasses,
+    dispatchClasses,
+    umlInfo,
+    dispatchInfo,
+    umlArrows,
+    dispatchArrow,
+  } = useUMLContext();
   const { activeClass } = umlInfo;
   const {
     javaClass = {
@@ -85,6 +91,16 @@ function ClassPanel() {
 
   function handlerDelete() {
     dispatchClasses({ type: "class/remove", payload: { id: activeClass } });
+
+    for (const [id, arrow] of Object.entries(umlArrows.arrows)) {
+      if (arrow.nodes.includes(activeClass)) {
+        dispatchArrow({
+          type: "arrow/remove",
+          payload: { id },
+        });
+      }
+    }
+
     handlerClose();
   }
 
