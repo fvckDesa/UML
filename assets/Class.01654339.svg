@@ -1,0 +1,12 @@
+<svg id="eWFVpn5ctef1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="220"
+  height="154" viewBox="0 0 220 154" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+  <path
+    d="M1,48.979106L0.999995,15.254064C1,2,1.000002,2,12.969028,2h174.211083c11.819984,0,11.819984,0,11.564268,13.254064l-.000001,33.725042L1,48.979106Z"
+    transform="matrix(1.106671 0 0 1 0.000104 0)" fill="#e5e7eb" stroke-width="0.5" />
+  <line x1="-7.5" y1="0" x2="190.5" y2="0" transform="matrix(1.110236 0 0 1 8.5 101.247)" fill="none" stroke="#000"
+    stroke-width="2" />
+  <line x1="-7.5" y1="0.02091" x2="190.5" y2="0.02091" transform="matrix(1.111578 0 0 1 8.24438 48.9582)" fill="none"
+    stroke="#000" stroke-width="2" />
+  <rect width="197.09582" height="150" rx="5" ry="5" transform="matrix(1.106061 0 0 1 1 2)" fill="none" stroke="#000"
+    stroke-width="2" />
+</svg>
