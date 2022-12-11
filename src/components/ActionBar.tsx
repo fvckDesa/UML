@@ -1,6 +1,7 @@
 // types
 import type { DragEvent } from "react";
-import type { Dimensions } from "@src/types/general";
+import type { ElementsKeys } from "@src/data/umlElements";
+import type { ClickEvents } from "@src/types/infoReducer";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
@@ -8,21 +9,35 @@ import { useState } from "react";
 // icons
 import { ClassSvg, ClassIcon } from "@src/assets";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+// data
+import { UML_ELEMENTS } from "@src/data/umlElements";
+import { useUMLContext } from "@src/contexts/UML";
 
 function ActionBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { umlInfo, dispatchInfo } = useUMLContext();
 
-  function handlerDragStart(dimensions: Dimensions, img: string) {
+  function handlerDragStart(element: ElementsKeys, img: string) {
+    const { width, height } = UML_ELEMENTS[element];
+
     return function (e: DragEvent<HTMLButtonElement>) {
-      e.dataTransfer.setData("application/uml", JSON.stringify(dimensions));
+      e.dataTransfer.setData("application/uml", element);
       e.dataTransfer.dropEffect = "copy";
-      const classSvg = new Image();
-      classSvg.src = img;
-      e.dataTransfer.setDragImage(
-        classSvg,
-        dimensions.width / 2,
-        dimensions.height / 2
-      );
+      const elementSvg = new Image();
+      elementSvg.src = img;
+      e.dataTransfer.setDragImage(elementSvg, width / 2, height / 2);
+    };
+  }
+
+  function handlerClick(clickEvent: ClickEvents) {
+    return function () {
+      dispatchInfo({
+        type: "clickEvent/change",
+        payload: {
+          clickEvent:
+            umlInfo.clickEvent?.type === clickEvent?.type ? null : clickEvent,
+        },
+      });
     };
   }
 
@@ -48,9 +63,15 @@ function ActionBar() {
         <button
           className={`${
             isOpen ? "right-0" : ""
-          } w-8 h-8 rounded-full opacity-60 cursor-grab transition-all hover:opacity-100 active:cursor-grabbing`}
+          } w-8 h-8 rounded-full opacity-60 cursor-pointer transition-all ${
+            umlInfo.clickEvent?.type === "element" &&
+            umlInfo.clickEvent?.info === "javaClass"
+              ? "bg-blue-500"
+              : ""
+          } hover:opacity-100`}
           draggable="true"
-          onDragStart={handlerDragStart({ width: 220, height: 154 }, ClassSvg)}
+          onDragStart={handlerDragStart("javaClass", ClassSvg)}
+          onClick={handlerClick({ type: "element", info: "javaClass" })}
         >
           <img src={ClassIcon} alt="Java class icon" />
         </button>

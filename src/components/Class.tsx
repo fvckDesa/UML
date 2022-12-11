@@ -109,7 +109,7 @@ function Class({ id, container, onClassSelect }: IProps) {
   }
 
   function handlerClick() {
-    if (umlInfo.clickEvent === "arrow") {
+    if (umlInfo.clickEvent?.type === "arrow") {
       if (umlArrows.newArrow && umlArrows.newArrow !== id) {
         dispatchArrow({
           type: "arrow/add",

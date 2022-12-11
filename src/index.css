@@ -26,6 +26,10 @@
     @apply cursor-copy;
   }
 
+  [data-click-event="element"] * {
+    @apply cursor-crosshair;
+  }
+
   .isDownloading .javaClass {
     @apply border-2 border-gray-400;
   }

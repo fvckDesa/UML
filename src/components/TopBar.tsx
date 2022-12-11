@@ -41,7 +41,8 @@ function TopBar() {
       dispatchInfo({
         type: "clickEvent/change",
         payload: {
-          clickEvent: umlInfo.clickEvent === clickEvent ? null : clickEvent,
+          clickEvent:
+            umlInfo.clickEvent?.type === clickEvent?.type ? null : clickEvent,
         },
       });
     };
@@ -52,11 +53,11 @@ function TopBar() {
       <div>
         <button
           className={`btnAction w-8 h-8 ${
-            umlInfo.clickEvent === "arrow"
+            umlInfo.clickEvent?.type === "arrow"
               ? "bg-blue-500 text-white hover:opacity-100 hover:bg-blue-700"
               : ""
           } transition-colors`}
-          onClick={handlerActive("arrow")}
+          onClick={handlerActive({ type: "arrow" })}
         >
           Arr
         </button>

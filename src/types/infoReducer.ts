@@ -1,3 +1,4 @@
+import type { ElementsKeys } from "@src/data/umlElements";
 import type { ActionGenerator } from "./general";
 
 type ActiveClassChange = ActionGenerator<
@@ -7,7 +8,22 @@ type ActiveClassChange = ActionGenerator<
   }
 >;
 
-export type ClickEvents = "arrow" | null;
+type ClickEventGenerator<
+  Type extends string,
+  Info = undefined
+> = Info extends undefined
+  ? {
+      type: Type;
+    }
+  : {
+      type: Type;
+      info: Info;
+    };
+
+export type ClickEvents =
+  | ClickEventGenerator<"arrow">
+  | ClickEventGenerator<"element", ElementsKeys>
+  | null;
 
 type CLickEventAction = ActionGenerator<
   "clickEvent/change",

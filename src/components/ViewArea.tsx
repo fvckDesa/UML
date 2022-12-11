@@ -92,7 +92,7 @@ function ViewArea() {
     <div
       ref={ref}
       data-grabbing={!!pos}
-      data-click-event={umlInfo.clickEvent}
+      data-click-event={umlInfo.clickEvent?.type}
       className={`relative h-full ${
         umlInfo.activeClass ? "mr-80" : "mr-0"
       } transition-all overflow-hidden`}

@@ -1,6 +1,6 @@
 // types
 import type { DragEvent, MouseEvent } from "react";
-import type { Coords, Dimensions } from "@src/types/general";
+import type { Coords } from "@src/types/general";
 // components
 import Class from "./Class";
 import Arrow from "./Arrow";
@@ -9,7 +9,9 @@ import NewArrow from "./NewArrow";
 import { useUMLContext } from "@src/contexts/UML";
 import { useRef, useState, useEffect } from "react";
 // utils
-import { v4 as uuid } from "uuid";
+import { dispatchNewClass } from "@src/utils/dispatch";
+// data
+import { UML_ELEMENTS, isUMLElement } from "@src/data/umlElements";
 
 interface IProps {
   width: number;
@@ -18,7 +20,7 @@ interface IProps {
 }
 
 function WorkSpace({ width, height, onActiveClass }: IProps) {
-  const { umlClasses, dispatchClasses, umlArrows } = useUMLContext();
+  const { umlClasses, dispatchClasses, umlArrows, umlInfo } = useUMLContext();
   const ref = useRef<HTMLDivElement>(null);
   const [pointer, setPointer] = useState<Coords | null>(null);
 
@@ -32,29 +34,16 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
   }
 
   function handlerDrop(e: DragEvent<HTMLDivElement>) {
-    const data = e.dataTransfer.getData("application/uml");
-    if (data && ref.current) {
-      const { width, height } = JSON.parse(data) as Dimensions;
+    const element = e.dataTransfer.getData("application/uml");
+    if (isUMLElement(element) && ref.current) {
+      const { width, height } = UML_ELEMENTS[element];
       const { x, y } = ref.current.getBoundingClientRect();
-      const id = uuid();
 
-      dispatchClasses({
-        type: "class/add",
-        payload: {
-          javaClass: {
-            name: `Class${Object.keys(umlClasses).length + 1}`,
-            attributes: [],
-            constructors: [],
-            methods: [],
-            isFinal: false,
-            haveMain: false,
-          },
-          coords: {
-            x: Math.abs(x) + e.clientX - width / 2,
-            y: Math.abs(y) + e.clientY - height / 2,
-          },
-          id,
-        },
+      dispatchNewClass({
+        dispatch: dispatchClasses,
+        name: `Class${Object.values(umlClasses).length + 1}`,
+        x: Math.abs(x) + e.clientX - width / 2,
+        y: Math.abs(y) + e.clientY - height / 2,
       });
     }
   }
@@ -70,6 +59,20 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
     });
   }
 
+  function handlerClick(e: MouseEvent<HTMLDivElement>) {
+    if (umlInfo.clickEvent?.type === "element" && ref.current) {
+      const { width, height } = UML_ELEMENTS[umlInfo.clickEvent.info];
+      const { x, y } = ref.current.getBoundingClientRect();
+
+      dispatchNewClass({
+        dispatch: dispatchClasses,
+        name: `Class${Object.values(umlClasses).length + 1}`,
+        x: Math.abs(x) + e.clientX - width / 2,
+        y: Math.abs(y) + e.clientY - height / 2,
+      });
+    }
+  }
+
   return (
     <div
       ref={ref}
@@ -79,6 +82,7 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
       onDrop={handlerDrop}
       onDragOver={handlerDragOver}
       onMouseMove={umlArrows.newArrow ? changePointerCoords : undefined}
+      onClick={handlerClick}
     >
       {Object.keys(umlClasses).map((id) => (
         <Class key={id} id={id} onClassSelect={onActiveClass} container={ref} />
