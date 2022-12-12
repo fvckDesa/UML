@@ -1,11 +1,11 @@
 // types
 import type { InputHTMLAttributes } from "react";
 // components
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
 import { forwardRef, Ref } from "react";
 // icons
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons"
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -37,18 +37,22 @@ const InputField = forwardRef(
           ref={ref}
           name={name}
           id={name}
-          className={`${className} w-full px-3 py-1.5 border-2 ${error ? "!border-red-500" : "border-gray-300"
-            } rounded-lg transition-all outline-none focus:border-blue-600`}
+          className={`${className} w-full px-3 py-1.5 border-2 ${
+            error ? "!border-red-500" : "border-gray-300"
+          } rounded-lg transition-all outline-none focus:border-blue-600`}
           type={type}
           autoComplete="off"
           {...inputProps}
         />
-        {error && <div className="flex items-center gap-2 px-1 text-center text-red-500">
-          <FontAwesomeIcon className="fill-red-500" icon={faTriangleExclamation} />
-          <span>
-            {error}
-          </span>
-        </div>}
+        {error && (
+          <div className="flex items-center gap-2 px-1 text-center text-red-500">
+            <FontAwesomeIcon
+              className="fill-red-500"
+              icon={faTriangleExclamation}
+            />
+            <span>{error}</span>
+          </div>
+        )}
       </div>
     );
   }

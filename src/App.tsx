@@ -4,31 +4,45 @@ import ClassPanel from "./components/ClassPanel";
 import TopBar from "./components/TopBar";
 import ViewArea from "./components/ViewArea";
 import { useUMLContext } from "./contexts/UML";
+import { useKeydown } from "./hooks/useKeydown";
+import { ClickEvents } from "./types/infoReducer";
 
 function App() {
-  const { dispatchInfo, dispatchArrow } = useUMLContext();
+  const { umlInfo, dispatchClasses, dispatchInfo, dispatchArrow } =
+    useUMLContext();
 
-  useEffect(() => {
-    function escPress(e: KeyboardEvent) {
-      if (e.key !== "Escape") return;
-      e.preventDefault();
-
+  function KeydownEventGenerator(event: ClickEvents) {
+    return function () {
       dispatchInfo({
         type: "clickEvent/change",
-        payload: { clickEvent: null },
+        payload: {
+          clickEvent: umlInfo.clickEvent?.type === event?.type ? null : event,
+        },
       });
-      dispatchArrow({
-        type: "arrow/cancel",
-        payload: {},
-      });
-    }
-
-    window.addEventListener("keydown", escPress);
-
-    return () => {
-      window.removeEventListener("keydown", escPress);
     };
-  }, []);
+  }
+
+  useKeydown({
+    target: window,
+    events: {
+      beforeAll: () => {
+        dispatchArrow({
+          type: "arrow/cancel",
+          payload: {},
+        });
+      },
+      Escape: KeydownEventGenerator(null),
+      a: KeydownEventGenerator({ type: "arrow" }),
+      d: KeydownEventGenerator({ type: "delete" }),
+      m: KeydownEventGenerator({ type: "move" }),
+      Backspace: () => {
+        dispatchClasses({
+          type: "class/remove",
+          payload: { id: umlInfo.activeClass },
+        });
+      },
+    },
+  });
 
   return (
     <div className="w-screen h-screen font-sans overflow-hidden select-none">
