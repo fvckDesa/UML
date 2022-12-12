@@ -1,11 +1,22 @@
+// types
 import type { Dimensions } from "@src/types/general";
+// assets
+import { ClassSvg } from "@src/assets";
 
 export type ElementsKeys = "javaClass";
 
-export const UML_ELEMENTS: Readonly<Record<ElementsKeys, Dimensions>> = {
+interface Element {
+  dimensions: Dimensions;
+  img: string;
+}
+
+export const UML_ELEMENTS: Readonly<Record<ElementsKeys, Element>> = {
   javaClass: {
-    width: 220,
-    height: 154,
+    dimensions: {
+      width: 220,
+      height: 154,
+    },
+    img: ClassSvg,
   },
 };
 

@@ -36,7 +36,7 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
   function handlerDrop(e: DragEvent<HTMLDivElement>) {
     const element = e.dataTransfer.getData("application/uml");
     if (isUMLElement(element) && ref.current) {
-      const { width, height } = UML_ELEMENTS[element];
+      const { width, height } = UML_ELEMENTS[element].dimensions;
       const { x, y } = ref.current.getBoundingClientRect();
 
       dispatchNewClass({
@@ -61,7 +61,8 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
 
   function handlerClick(e: MouseEvent<HTMLDivElement>) {
     if (umlInfo.clickEvent?.type === "element" && ref.current) {
-      const { width, height } = UML_ELEMENTS[umlInfo.clickEvent.info];
+      const { width, height } =
+        UML_ELEMENTS[umlInfo.clickEvent.info].dimensions;
       const { x, y } = ref.current.getBoundingClientRect();
 
       dispatchNewClass({
