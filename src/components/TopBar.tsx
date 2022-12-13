@@ -4,6 +4,7 @@ import { ClickEvents } from "@src/types/infoReducer";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DownloadModal from "./DownloadModal";
+import ToggleBtn from "@src/ui/ToggleBtn";
 // hooks
 import { useUMLContext } from "@src/contexts/UML";
 import { useState } from "react";
@@ -15,7 +16,7 @@ import {
   faArrowsUpDownLeftRight,
 } from "@fortawesome/free-solid-svg-icons";
 // utils
-import { saveAsPNG, saveAsJPG, saveAsPDF } from "@src/utils/download";
+import { saveAs } from "@src/utils/download";
 
 function TopBar() {
   const { umlInfo, dispatchInfo } = useUMLContext();
@@ -23,21 +24,13 @@ function TopBar() {
 
   async function handlerSave({ fileType, name }: DownloadInfo) {
     const workspace = document.querySelector("#workspace") as HTMLElement;
-    let fn;
 
-    switch (fileType) {
-      case "png":
-        fn = saveAsPNG;
-        break;
-      case "jpg":
-        fn = saveAsJPG;
-        break;
-      case "pdf":
-        fn = saveAsPDF;
-        break;
-    }
+    await saveAs({
+      type: fileType,
+      element: workspace,
+      name,
+    });
 
-    await fn(workspace, name);
     setIsOpen(false);
   }
 
@@ -56,40 +49,25 @@ function TopBar() {
   return (
     <header className="flex justify-between items-center w-full h-12 px-6 py-2 border-b-2 border-gray-600">
       <div className="flex justify-center items-center gap-2">
-        <button
-          className={`btnAction w-8 h-8 ${
-            umlInfo.clickEvent?.type === "arrow"
-              ? "bg-blue-500 text-white hover:opacity-100 hover:bg-blue-700"
-              : ""
-          } transition-colors`}
+        <ToggleBtn
+          active={umlInfo.clickEvent?.type === "arrow"}
+          icon={faArrowTrendUp}
           onClick={handlerActive({ type: "arrow" })}
-        >
-          <FontAwesomeIcon icon={faArrowTrendUp} />
-        </button>
-        <button
-          className={`btnAction w-8 h-8 ${
-            umlInfo.clickEvent?.type === "delete"
-              ? "bg-blue-500 text-white hover:opacity-100 hover:bg-blue-700"
-              : ""
-          } transition-colors`}
+        />
+        <ToggleBtn
+          active={umlInfo.clickEvent?.type === "delete"}
+          icon={faTrashCan}
           onClick={handlerActive({ type: "delete" })}
-        >
-          <FontAwesomeIcon icon={faTrashCan} />
-        </button>
-        <button
-          className={`btnAction w-8 h-8 ${
-            umlInfo.clickEvent?.type === "move"
-              ? "bg-blue-500 text-white hover:opacity-100 hover:bg-blue-700"
-              : ""
-          } transition-colors`}
+        />
+        <ToggleBtn
+          active={umlInfo.clickEvent?.type === "move"}
+          icon={faArrowsUpDownLeftRight}
           onClick={handlerActive({ type: "move" })}
-        >
-          <FontAwesomeIcon icon={faArrowsUpDownLeftRight} />
-        </button>
+        />
       </div>
       <div className="flex justify-center items-center gap-2">
         <button
-          className="btnAction w-8 h-8"
+          className="btnAction w-8 h-8 disabled:cursor-not-allowed"
           onClick={() => setIsOpen(true)}
           disabled={Object.values(umlInfo.errors).length > 0}
         >
