@@ -17,87 +17,85 @@ interface IProps extends InputProps {
   onSelectOption: (value: ItemValue) => void;
 }
 
-const DataListField = forwardRef(
-  (
-    {
-      options,
-      onSelectOption,
-      label,
-      onClick,
-      onChange,
-      onFocus,
-      onBlur,
-      ...inputProps
-    }: IProps,
-    ref: Ref<HTMLInputElement>
-  ) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [filter, setFilter] = useState("");
-    const inputRef = useRef<HTMLInputElement>(null);
-    const filterOptions = useMemo(
-      () => (filter ? filterItems(options, filter) : options),
-      [options, filter]
-    );
+function DataListField(
+  {
+    options,
+    onSelectOption,
+    label,
+    onClick,
+    onChange,
+    onFocus,
+    onBlur,
+    ...inputProps
+  }: IProps,
+  ref: Ref<HTMLInputElement>
+) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const filterOptions = useMemo(
+    () => (filter ? filterItems(options, filter) : options),
+    [options, filter]
+  );
 
-    const handlerKeydown = useKeydown({
-      events: {
-        Escape: () => setIsOpen(false),
-      },
-    });
+  const handlerKeydown = useKeydown({
+    events: {
+      Escape: () => setIsOpen(false),
+    },
+  });
 
-    useLayoutEffect(() => {
-      if (typeof ref === "function") {
-        ref(inputRef.current);
-      } else if (ref) {
-        (ref as any).current = inputRef.current;
-      }
-    }, [inputRef]);
-
-    function handlerClick(e: MouseEvent<HTMLInputElement>) {
-      onClick?.(e);
-      setFilter(inputRef.current?.value ?? "");
-      setIsOpen(true);
+  useLayoutEffect(() => {
+    if (typeof ref === "function") {
+      ref(inputRef.current);
+    } else if (ref) {
+      (ref as any).current = inputRef.current;
     }
+  }, [inputRef]);
 
-    function handlerChange(e: ChangeEvent<HTMLInputElement>) {
-      onChange?.(e);
-      setFilter(e.target.value);
-    }
-
-    function handlerFocus(e: FocusEvent<HTMLInputElement>) {
-      onFocus?.(e);
-      setFilter(e.target.value);
-      setIsOpen(true);
-    }
-
-    function handlerBlur(e: FocusEvent<HTMLInputElement>) {
-      onBlur?.(e);
-      setIsOpen(e.relatedTarget === null);
-    }
-
-    return (
-      <>
-        <InputField
-          ref={inputRef}
-          label={label}
-          onClick={handlerClick}
-          onChange={handlerChange}
-          onFocus={handlerFocus}
-          onBlur={handlerBlur}
-          onKeyDown={handlerKeydown}
-          {...inputProps}
-        />
-        {isOpen && filterOptions.length > 0 && (
-          <OptionsList
-            items={filterOptions}
-            element={inputRef}
-            onClose={() => setIsOpen(false)}
-            onSelect={(v) => onSelectOption(v)}
-          />
-        )}
-      </>
-    );
+  function handlerClick(e: MouseEvent<HTMLInputElement>) {
+    onClick?.(e);
+    setFilter(inputRef.current?.value ?? "");
+    setIsOpen(true);
   }
-);
 
-export default DataListField;
+  function handlerChange(e: ChangeEvent<HTMLInputElement>) {
+    onChange?.(e);
+    setFilter(e.target.value);
+  }
+
+  function handlerFocus(e: FocusEvent<HTMLInputElement>) {
+    onFocus?.(e);
+    setFilter(e.target.value);
+    setIsOpen(true);
+  }
+
+  function handlerBlur(e: FocusEvent<HTMLInputElement>) {
+    onBlur?.(e);
+    setIsOpen(e.relatedTarget === null);
+  }
+
+  return (
+    <>
+      <InputField
+        ref={inputRef}
+        label={label}
+        onClick={handlerClick}
+        onChange={handlerChange}
+        onFocus={handlerFocus}
+        onBlur={handlerBlur}
+        onKeyDown={handlerKeydown}
+        {...inputProps}
+      />
+      {isOpen && filterOptions.length > 0 && (
+        <OptionsList
+          items={filterOptions}
+          element={inputRef}
+          onClose={() => setIsOpen(false)}
+          onSelect={(v) => onSelectOption(v)}
+        />
+      )}
+    </>
+  );
+}
+
+export default forwardRef(DataListField);
