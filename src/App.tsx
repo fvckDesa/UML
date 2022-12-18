@@ -25,7 +25,7 @@ function App() {
   useKeydown({
     target: window,
     events: {
-      beforeAll: () => {
+      beforeEach: () => {
         dispatchArrow({
           type: "arrow/cancel",
           payload: {},

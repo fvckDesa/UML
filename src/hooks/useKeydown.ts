@@ -1,32 +1,39 @@
-import { useCallback, useEffect } from "react";
+import {
+  KeyboardEvent as ReactKeyboardEvent,
+  useCallback,
+  useEffect,
+} from "react";
 
-type Target = Window | Document | Element;
+type Target = Window | Document | Element | null;
 
-type EventFn = (e: KeyboardEvent) => void;
+type Event = KeyboardEvent | ReactKeyboardEvent;
 
-type KeyEvents = Record<string, EventFn>;
+type KeyboardListener = (e: Event) => void;
+
+type KeyEvents = Record<string, KeyboardListener>;
 
 interface IProps {
   target?: Target;
   events: KeyEvents;
 }
 
-export function useKeydown({ target, events }: IProps): EventFn {
+const PROTECTED_ELEMENTS = [HTMLInputElement, HTMLTextAreaElement];
+
+export function useKeydown({ target, events }: IProps): KeyboardListener {
   const handlerKeydown = useCallback(
-    (e: KeyboardEvent) => {
+    (e: Event) => {
       // not trigger key events when write in input, textarea, ecc..
       if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement ||
-        e.target instanceof HTMLDataListElement ||
-        (e.target instanceof HTMLElement && e.target.isContentEditable)
+        !(e.key in events) ||
+        (!PROTECTED_ELEMENTS.some((el) => e.currentTarget instanceof el) &&
+          PROTECTED_ELEMENTS.some((el) => e.target instanceof el))
       )
         return;
 
-      events?.beforeAll(e);
-      if (e.key in events) {
-        events[e.key](e);
+      if ("beforeEach" in events) {
+        events.beforeEach(e);
       }
+      events[e.key](e);
     },
     [events]
   );
