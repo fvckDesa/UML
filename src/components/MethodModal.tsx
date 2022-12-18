@@ -18,6 +18,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { validation } from "@src/utils/validate";
+import { JAVA_TYPES } from "@src/data/types";
+import TypeList from "./TypeList";
 
 type IProps = Modal<Method>;
 
@@ -84,13 +86,9 @@ function ClassModal({ data, onSave, onClose }: IProps) {
     >
       <SelectField
         label="Visibility"
+        options={["public", "private", "protected", "package"]}
         {...register("visibility", { value: "public" })}
-      >
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-        <option value="protected">Protected</option>
-        <option value="package">Package</option>
-      </SelectField>
+      />
       <div className="overflow-x-hidden">
         <header className="flex justify-between items-center p-1">
           <h2>Parameters</h2>
@@ -114,7 +112,8 @@ function ClassModal({ data, onSave, onClose }: IProps) {
             <VariableField
               key={field.id}
               isArray={watch(`parameters.${i}.isArray`)}
-              register={register}
+              //! resolve type error
+              register={register as any}
               index={i}
               errors={errors.parameters?.[i]}
               onRemove={remove}
@@ -132,8 +131,9 @@ function ClassModal({ data, onSave, onClose }: IProps) {
           },
         })}
       />
-      <InputField
+      <TypeList
         label={"Return type"}
+        onSelectOption={(value) => setValue("type", String(value))}
         error={errors.type?.message}
         {...register("type", {
           required: `Return type is required`,

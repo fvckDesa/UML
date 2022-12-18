@@ -81,13 +81,9 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
     >
       <SelectField
         label="Visibility"
+        options={["public", "private", "protected", "package"]}
         {...register("visibility", { value: "public" })}
-      >
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-        <option value="protected">Protected</option>
-        <option value="package">Package</option>
-      </SelectField>
+      />
       <div className="overflow-x-hidden">
         <header className="flex justify-between items-center p-1">
           <h2>Parameters</h2>
@@ -111,7 +107,8 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
             <VariableField
               key={field.id}
               isArray={watch(`parameters.${i}.isArray`)}
-              register={register}
+              //! resolve type error
+              register={register as any}
               index={i}
               errors={errors.parameters?.[i]}
               onRemove={remove}

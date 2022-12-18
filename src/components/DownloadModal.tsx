@@ -25,12 +25,9 @@ function DownloadModal({ onSave, onClose }: IProps) {
     >
       <SelectField
         label="File type"
+        options={["png", "jpg", "pdf"]}
         {...register("fileType", { value: "png" })}
-      >
-        <option value="png">PNG</option>
-        <option value="jpg">JPG</option>
-        <option value="pdf">PDF</option>
-      </SelectField>
+      />
       <InputField
         label="File name"
         error={errors.name?.message}

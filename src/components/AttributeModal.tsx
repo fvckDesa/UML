@@ -4,6 +4,7 @@ import type { Attribute } from "@src/types/class";
 import type { Modal } from "@src/types/modal";
 // components
 import { InputField, SelectField, CheckboxField, ModalForm } from "@src/ui";
+import TypeList from "./TypeList";
 // hooks
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
@@ -42,13 +43,9 @@ function AttributeModal({ data, onSave, onClose }: IProps) {
     >
       <SelectField
         label="Visibility"
+        options={["public", "private", "protected", "package"]}
         {...register("visibility", { value: "public" })}
-      >
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-        <option value="protected">Protected</option>
-        <option value="package">Package</option>
-      </SelectField>
+      />
       <InputField
         label="Name"
         error={errors.name?.message}
@@ -59,8 +56,9 @@ function AttributeModal({ data, onSave, onClose }: IProps) {
           },
         })}
       />
-      <InputField
+      <TypeList
         label={"Type"}
+        onSelectOption={(value) => setValue("type", String(value))}
         error={errors.type?.message}
         {...register("type", {
           required: `${"Type"} is required`,
