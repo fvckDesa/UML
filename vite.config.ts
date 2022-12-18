@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import * as path from "path";
@@ -10,11 +9,6 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@src": path.resolve(__dirname, "./src"),
     },
-  },
-  test: {
-    setupFiles: "./test/setup.ts",
-    environment: "jsdom",
-    restoreMocks: true,
   },
   base: mode === "production" ? "/UML/" : "",
 }));
