@@ -1,3 +1,6 @@
+// type
+import type { DownloadImage } from "@src/types/download";
+// download utils
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -53,13 +56,7 @@ async function saveAsPDF(element: HTMLElement, name: string) {
   pdf.save(`${name}.pdf`);
 }
 
-export interface DownloadInfo {
-  type: "png" | "jpg" | "pdf";
-  element: HTMLElement;
-  name: string;
-}
-
-export async function saveAs({ type, element, name }: DownloadInfo) {
+export async function saveAs({ type, element, name }: DownloadImage) {
   let fn;
 
   switch (type) {

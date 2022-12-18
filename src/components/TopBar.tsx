@@ -1,5 +1,5 @@
 // types
-import type { DownloadInfo } from "@src/utils/download";
+import type { DownloadImageInfo } from "@src/types/download";
 import { ClickEvents } from "@src/types/infoReducer";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +22,7 @@ function TopBar() {
   const { umlInfo, dispatchInfo } = useUMLContext();
   const [isOpen, setIsOpen] = useState(false);
 
-  async function handlerSave({ type, name }: Omit<DownloadInfo, "element">) {
+  async function handlerSave({ type, name }: DownloadImageInfo) {
     const workspace = document.querySelector("#workspace") as HTMLElement;
 
     await saveAs({
