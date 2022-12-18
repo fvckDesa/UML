@@ -1,13 +1,13 @@
 // types
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, Ref } from "react";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
-import { forwardRef, Ref } from "react";
+import { forwardRef } from "react";
 // icons
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-interface IProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface IProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   type?: "text" | "password" | "email";
