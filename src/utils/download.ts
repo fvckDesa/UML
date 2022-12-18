@@ -29,15 +29,15 @@ async function toBlob(element: HTMLElement, type: "image/png" | "image/jpeg") {
   return blob;
 }
 
-export async function saveAsPNG(element: HTMLElement, name: string) {
+async function saveAsPNG(element: HTMLElement, name: string) {
   download(`${name}.png`, await toBlob(element, "image/png"));
 }
 
-export async function saveAsJPG(element: HTMLElement, name: string) {
+async function saveAsJPG(element: HTMLElement, name: string) {
   download(`${name}.jpg`, await toBlob(element, "image/jpeg"));
 }
 
-export async function saveAsPDF(element: HTMLElement, name: string) {
+async function saveAsPDF(element: HTMLElement, name: string) {
   const buffer = await (await toBlob(element, "image/png")).arrayBuffer();
   const width = element.scrollWidth;
   const height = element.scrollHeight;
@@ -51,4 +51,30 @@ export async function saveAsPDF(element: HTMLElement, name: string) {
   pdf.addImage(new Uint8Array(buffer), "PNG", 0, 0, width, height);
 
   pdf.save(`${name}.pdf`);
+}
+
+export interface DownloadInfo {
+  type: "png" | "jpg" | "pdf";
+  element: HTMLElement;
+  name: string;
+}
+
+export async function saveAs({ type, element, name }: DownloadInfo) {
+  let fn;
+
+  switch (type) {
+    case "png":
+      fn = saveAsPNG;
+      break;
+    case "jpg":
+      fn = saveAsJPG;
+      break;
+    case "pdf":
+      fn = saveAsPDF;
+      break;
+    default:
+      throw new Error("File type not supported");
+  }
+
+  await fn(element, name);
 }
