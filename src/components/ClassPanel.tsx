@@ -5,13 +5,13 @@ import { CheckboxField, InputField } from "@src/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AttributePanelList from "./AttributePanelList";
 import MethodPanelList from "./MethodPanelList";
+import ConstructorPanelList from "./ConstructorPanelList";
 // hooks
 import { useUMLContext } from "@src/contexts/UML";
 // utils
-import { generateClassCode } from "@src/utils/class";
+import { createClassCode } from "@src/utils/code";
 // icons
 import { faXmark, faCode } from "@fortawesome/free-solid-svg-icons";
-import ConstructorPanelList from "./ConstructorPanelList";
 
 function ClassPanel() {
   const {
@@ -105,8 +105,7 @@ function ClassPanel() {
 
   function handlerCode() {
     if (!activeClass) return;
-    const code = generateClassCode(javaClass);
-
+    const code = createClassCode(javaClass);
     const url = URL.createObjectURL(new File([code], ""));
     const link = document.createElement("a");
     link.download = `${javaClass.name}.java`;

@@ -3,10 +3,8 @@ import type {
   Variable,
   Attribute,
   Method,
-  JavaClass,
   Constructor,
 } from "@src/types/class";
-import { MAIN_METHOD } from "@src/data/class";
 
 function convertVisibility(visibility: Visibility): string | never {
   switch (visibility) {
@@ -23,7 +21,7 @@ function convertVisibility(visibility: Visibility): string | never {
   }
 }
 
-function stringifyType(type: string, isArray: boolean): string {
+export function stringifyType(type: string, isArray: boolean): string {
   return `${type}${isArray ? "[]" : ""}`;
 }
 
@@ -81,54 +79,4 @@ export function stringifyMethod({
     type,
     isArray
   )}`;
-}
-
-export function generateClassCode({
-  name,
-  attributes,
-  constructors,
-  methods,
-  isFinal,
-  haveMain,
-}: JavaClass): string {
-  let code = `public ${isFinal ? "final " : ""}class ${name} {\n\t`;
-
-  code += attributes
-    .map(
-      ({ visibility, isStatic, isFinal, type, isArray, name }) =>
-        `${visibility} ${isStatic ? "static " : ""}${
-          isFinal ? "final " : ""
-        }${stringifyType(type, isArray)} ${name};`
-    )
-    .join("\t\n");
-
-  code += "\t\n\t\n\t";
-
-  code += constructors.map(
-    ({ visibility, name, parameters }) =>
-      `${visibility} ${name}(${parameters
-        .map(
-          ({ type, isArray, name }) => `${stringifyType(type, isArray)} ${name}`
-        )
-        .join(", ")}) {}`
-  );
-
-  code += "\t\n\t\n\t";
-
-  code += methods
-    .concat(haveMain ? MAIN_METHOD : [])
-    .map(
-      ({ visibility, isStatic, isFinal, type, isArray, name, parameters }) =>
-        `${visibility} ${isStatic ? "static " : ""}${
-          isFinal ? "final " : ""
-        }${stringifyType(type, isArray)} ${name}(${parameters
-          .map(
-            ({ type, isArray, name }) =>
-              `${stringifyType(type, isArray)} ${name}`
-          )
-          .join(", ")}) {}`
-    )
-    .join("\t\n");
-
-  return code + "\n}";
 }
