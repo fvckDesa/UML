@@ -6,6 +6,7 @@ import ViewArea from "./components/ViewArea";
 import { useUMLContext } from "./contexts/UML";
 import { useKeydown } from "./hooks/useKeydown";
 import { ClickEvents } from "./types/infoReducer";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   const { umlInfo, dispatchClasses, dispatchInfo, dispatchArrow } =
@@ -31,7 +32,15 @@ function App() {
           payload: {},
         });
       },
-      Escape: KeydownEventGenerator(null),
+      Escape: () => {
+        if (umlInfo.clickEvent === null) {
+          return dispatchInfo({
+            type: "activeClass/change",
+            payload: { id: "" },
+          });
+        }
+        KeydownEventGenerator(null)();
+      },
       a: KeydownEventGenerator({ type: "arrow" }),
       d: KeydownEventGenerator({ type: "delete" }),
       m: KeydownEventGenerator({ type: "move" }),
@@ -41,6 +50,12 @@ function App() {
           payload: { id: umlInfo.activeClass },
         });
       },
+      t: () => {
+        dispatchInfo({
+          type: "menu/toggle",
+          payload: {},
+        });
+      },
     },
   });
 
@@ -48,7 +63,7 @@ function App() {
     <div className="w-screen h-screen font-sans overflow-hidden select-none">
       <TopBar />
       <div className="relative w-full h-[calc(100%-48px)]">
-        <ClassPanel />
+        <Sidebar />
         <ViewArea />
         <ActionBar />
       </div>

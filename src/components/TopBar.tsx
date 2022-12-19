@@ -14,6 +14,8 @@ import {
   faTrashCan,
   faArrowTrendUp,
   faArrowsUpDownLeftRight,
+  faBars,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 // utils
 import { saveAs } from "@src/utils/download";
@@ -44,6 +46,13 @@ function TopBar() {
         },
       });
     };
+  }
+
+  function handlerMenu() {
+    dispatchInfo({
+      type: "menu/toggle",
+      payload: {},
+    });
   }
 
   return (
@@ -78,6 +87,9 @@ function TopBar() {
               onClose={() => setIsOpen(false)}
             />
           )}
+        </button>
+        <button className="btnAction w-8 h-8" onClick={handlerMenu}>
+          <FontAwesomeIcon icon={umlInfo.isMenuOpen ? faXmark : faBars} />
         </button>
       </div>
     </header>

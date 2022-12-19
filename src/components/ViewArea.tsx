@@ -95,7 +95,7 @@ function ViewArea() {
       data-grabbing={!!pos}
       data-click-event={umlInfo.clickEvent?.type}
       className={`relative h-full ${
-        umlInfo.activeClass ? "mr-80" : "mr-0"
+        umlInfo.isMenuOpen ? "mr-80" : "mr-0"
       } transition-all overflow-hidden`}
       onMouseDown={handlerRoleDown}
       onMouseMove={handlerMouseMove}

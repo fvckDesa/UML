@@ -32,6 +32,7 @@ const initInfoState: InfoState = {
   activeClass: "",
   errors: {},
   clickEvent: null,
+  isMenuOpen: true,
 };
 
 const initArrowsState: ArrowState = {

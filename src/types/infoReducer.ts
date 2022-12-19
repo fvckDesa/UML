@@ -27,7 +27,7 @@ export type ClickEvents =
   | ClickEventGenerator<"move">
   | null;
 
-type CLickEventAction = ActionGenerator<
+type ClickEventAction = ActionGenerator<
   "clickEvent/change",
   { clickEvent: ClickEvents }
 >;
@@ -49,10 +49,17 @@ type ErrorRemove = ActionGenerator<"error/remove", { id: string }>;
 
 type ErrorActions = ErrorChange | ErrorRemove;
 
-export type InfoAction = ActiveClassChange | ErrorActions | CLickEventAction;
+type MenuActions = ActionGenerator<"menu/toggle", { force?: boolean }>;
+
+export type InfoAction =
+  | ActiveClassChange
+  | ErrorActions
+  | ClickEventAction
+  | MenuActions;
 
 export interface InfoState {
   activeClass: string;
   errors: Record<string, Error>;
   clickEvent: ClickEvents;
+  isMenuOpen: boolean;
 }

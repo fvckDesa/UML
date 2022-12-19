@@ -32,6 +32,12 @@ export function infoReducer(state: InfoState, action: InfoAction): InfoState {
         clickEvent: payload.clickEvent,
       };
     }
+    case "menu/toggle": {
+      return {
+        ...state,
+        isMenuOpen: payload.force ?? !state.isMenuOpen,
+      };
+    }
     default: {
       return state;
     }

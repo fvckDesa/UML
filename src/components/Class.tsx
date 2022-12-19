@@ -105,6 +105,7 @@ function Class({ id, container, onClassSelect }: IProps) {
     });
 
     dispatchInfo({ type: "activeClass/change", payload: { id } });
+    dispatchInfo({ type: "menu/toggle", payload: { force: true } });
   }
 
   function handlerClick() {
@@ -138,7 +139,7 @@ function Class({ id, container, onClassSelect }: IProps) {
       data-class-id={id}
       style={{ top: coords.y, left: coords.x }}
       className={`javaClass absolute min-w-[220px] w-max ${
-        umlInfo.activeClass === id
+        umlInfo.activeClass === id && umlInfo.isMenuOpen
           ? "border-4 border-blue-500 shadow-lg"
           : umlInfo.errors[id]
           ? "border-4 border-red-500"
