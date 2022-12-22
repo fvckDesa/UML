@@ -3,44 +3,29 @@ import type { MouseEvent } from "react";
 // components
 import WorkSpace from "./WorkSpace";
 // hooks
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect } from "react";
 import { useUMLContext } from "@src/contexts/UML";
 import { Coords } from "@src/types/general";
-
-interface AreaPos {
-  top: number;
-  left: number;
-  x: number;
-  y: number;
-}
+import { useGrabScroll } from "@src/hooks/useGrabScroll";
 
 function ViewArea() {
   const { umlInfo } = useUMLContext();
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<AreaPos | null>(null);
+  const { isGrabbing, target, onMouseDown, onMouseMove } =
+    useGrabScroll<HTMLDivElement>({ reverse: true });
 
   // scroll to center of workspace
   useLayoutEffect(() => {
-    if (!ref.current) return;
-    const el = ref.current;
+    if (!target.current) return;
+    const el = target.current;
 
     el.scrollTo({
       top: el.scrollHeight / 2 - el.clientHeight / 2,
       left: el.scrollWidth / 2 - el.clientWidth / 2,
     });
   }, []);
-  // disable scroll grabbing
-  useEffect(() => {
-    function removePos() {
-      setPos(null);
-    }
-    window.addEventListener("mouseup", removePos);
-
-    return () => window.removeEventListener("mouseup", removePos);
-  }, []);
   // active class in panel and center class
   function handlerActiveClass({ x, y }: Coords) {
-    const el = ref.current;
+    const el = target.current;
     if (!el) return;
 
     function scrollTo() {
@@ -65,40 +50,27 @@ function ViewArea() {
     }
   }
 
-  function handlerRoleDown(e: MouseEvent) {
-    if ((umlInfo.clickEvent?.type !== "move" && e.button != 1) || !ref.current)
+  function handlerRoleDown(e: MouseEvent<HTMLDivElement>) {
+    if (
+      (umlInfo.clickEvent?.type !== "move" && e.button != 1) ||
+      !target.current
+    )
       return;
     e.preventDefault();
 
-    setPos({
-      left: ref.current.scrollLeft,
-      top: ref.current.scrollTop,
-      x: e.clientX,
-      y: e.clientY,
-    });
-  }
-
-  function handlerMouseMove(e: MouseEvent) {
-    if (!ref.current || !pos) return;
-
-    const dx = e.clientX - pos.x;
-    const dy = e.clientY - pos.y;
-
-    // Scroll the element
-    ref.current.scrollTop = pos.top - dy;
-    ref.current.scrollLeft = pos.left - dx;
+    onMouseDown(e);
   }
 
   return (
     <div
-      ref={ref}
-      data-grabbing={!!pos}
+      ref={target}
+      data-grabbing={isGrabbing}
       data-click-event={umlInfo.clickEvent?.type}
       className={`relative h-full ${
         umlInfo.isMenuOpen ? "mr-80" : "mr-0"
       } transition-all overflow-hidden`}
       onMouseDown={handlerRoleDown}
-      onMouseMove={handlerMouseMove}
+      onMouseMove={onMouseMove}
       onContextMenu={(e) => e.preventDefault()}
     >
       <WorkSpace
