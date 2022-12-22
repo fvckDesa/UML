@@ -1,8 +1,10 @@
 import { useState } from "react";
 import SidebarClass from "./SidebarClass";
 import { useUMLContext } from "@src/contexts/UML";
+import SidebarElements from "./SidebarElements";
+import ScrollContainer from "@src/ui/ScrollContainer";
 
-const PAGES = ["class"] as const;
+const PAGES = ["elements", "class"] as const;
 const PageWidth = 320 / PAGES.length;
 
 type Pages = typeof PAGES[number];
@@ -41,9 +43,9 @@ function Sidebar() {
           />
         </div>
       </header>
-      <main className="flex-1 mt-3 overflow-y-auto">
-        {currentPage === "class" ? <SidebarClass /> : <></>}
-      </main>
+      <ScrollContainer className="flex-1 mt-3">
+        {currentPage === "class" ? <SidebarClass /> : <SidebarElements />}
+      </ScrollContainer>
     </div>
   );
 }
