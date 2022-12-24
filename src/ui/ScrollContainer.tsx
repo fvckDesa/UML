@@ -1,93 +1,110 @@
 // types
-import type { HTMLAttributes, MouseEvent, WheelEvent } from "react";
+import type {
+  HTMLAttributes,
+  MouseEvent,
+  WheelEvent,
+  CSSProperties,
+} from "react";
 // hooks
 import { useState, useEffect, useRef } from "react";
 import { useGrabScroll } from "@src/hooks/useGrabScroll";
 
-interface IProps extends HTMLAttributes<HTMLDivElement> {}
+interface IProps extends HTMLAttributes<HTMLDivElement> {
+  height?: CSSProperties["height"];
+  maxHeight?: CSSProperties["maxHeight"];
+}
 
-const TRACK_PADDING = 3;
-
-function ScrollContainer({ className = "", children, ...divProps }: IProps) {
-  const [trackLength, setTrackLength] = useState(0);
+function ScrollContainer({
+  height = "100%",
+  maxHeight = "100%",
+  className = "",
+  children,
+  ...divProps
+}: IProps) {
   const [trackTop, setTrackTop] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { target, ...scrollBar } = useGrabScroll<HTMLDivElement>();
+  const [ratio, setRatio] = useState(0);
+  const { target, ...scrollBar } = useGrabScroll<HTMLDivElement>({
+    transformDistance: (dy, target) =>
+      dy / (target.clientHeight / target.scrollHeight),
+  });
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const observer = new ResizeObserver(() => {
-      if (!containerRef.current || !target.current) return;
+    if (!target.current) return;
 
-      setTrackLength(
-        (target.current.clientHeight / containerRef.current.scrollHeight) *
-          target.current.clientHeight -
-          TRACK_PADDING * 2
-      );
+    function resizeRatio() {
+      if (!target.current) return;
+      const { clientHeight, scrollHeight } = target.current;
+
+      setRatio((clientHeight - 4) / (scrollHeight - 4));
+    }
+
+    const mutation = new MutationObserver(resizeRatio);
+    const resize = new ResizeObserver(resizeRatio);
+
+    mutation.observe(target.current, {
+      childList: true,
+      subtree: true,
     });
+    resize.observe(target.current);
 
-    observer.observe(containerRef.current);
-
-    return () => observer.disconnect();
-  }, [containerRef]);
+    return () => {
+      mutation.disconnect();
+      resize.disconnect();
+    };
+  }, [target]);
 
   function handlerScroll() {
-    if (!containerRef.current || !target.current) return;
-    setTrackTop(
-      (target.current.clientHeight / containerRef.current.scrollHeight) *
-        target.current.scrollTop
-    );
+    if (!target.current) return;
+    setTrackTop(ratio * target.current.scrollTop);
   }
 
   function handlerWheel(e: WheelEvent) {
     if (!target.current) return;
+
     target.current.scrollBy({
       top: e.deltaY,
     });
   }
 
   function handlerClick(e: MouseEvent) {
-    if (!containerRef.current || !target.current) return;
+    if (!target.current) return;
     const { top, height } = target.current.getBoundingClientRect();
 
     target.current.scrollTop =
-      ((e.clientY - top) / height) *
-      (containerRef.current.scrollHeight - height);
+      ((e.clientY - top) / height) * (target.current.scrollHeight - height);
   }
 
   return (
     <div
-      className={`${className} relative overflow-hidden group`}
+      className={`relative ${className} overflow-hidden group`}
       {...divProps}
     >
       <div
         ref={target}
-        className="w-full h-full overflow-hidden"
+        className="w-full overflow-hidden"
+        style={{
+          height,
+          maxHeight,
+        }}
         onScroll={handlerScroll}
         onWheel={handlerWheel}
       >
-        <div
-          ref={containerRef}
-          className="w-full min-h-full overflow-y-visible"
-        >
-          {children}
-        </div>
+        {children}
       </div>
-      <div className="absolute top-0 right-0 h-full opacity-0 transition-opacity duration-300 group/scrollBar group-hover:opacity-100">
+      <div
+        className="absolute top-0 right-0 w-fit h-full opacity-0 transition-opacity duration-300 group/scrollBar group-hover:opacity-100"
+        onWheel={handlerWheel}
+        onMouseMove={scrollBar.onMouseMove}
+      >
         <div className="absolute w-full h-full" onClick={handlerClick} />
         <div
-          className="w-4 h-full border-l border-transparent group-hover/scrollBar:w-5 group-hover/scrollBar:border-gray-500 group-hover/scrollBar:bg-white transition-all"
-          style={{ padding: TRACK_PADDING }}
-          hidden={
-            target.current?.clientHeight === containerRef.current?.scrollHeight
-          }
-          onWheel={handlerWheel}
-          onMouseMove={scrollBar.onMouseMove}
+          className="w-4 h-full px-0.5 py-1 border-l border-transparent overflow-hidden group-hover/scrollBar:w-5 group-hover/scrollBar:border-gray-500 group-hover/scrollBar:bg-white transition-all"
+          hidden={ratio >= 1}
         >
           <div
             className="w-full rounded bg-slate-600"
             style={{
-              height: trackLength,
+              height: `${ratio * 100}%`,
               transform: `translateY(${trackTop}px)`,
             }}
             onMouseDown={scrollBar.onMouseDown}

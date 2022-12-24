@@ -33,7 +33,7 @@ function Sidebar() {
             </div>
           ))}
         </div>
-        <div className="relative w-full h-1">
+        <div className="relative w-full h-1 bg-gray-300">
           <div
             className="absolute top-0 h-full bg-blue-500 transition-all"
             style={{
