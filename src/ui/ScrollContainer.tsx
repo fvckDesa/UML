@@ -4,21 +4,25 @@ import type {
   MouseEvent,
   WheelEvent,
   CSSProperties,
+  UIEvent,
 } from "react";
 // hooks
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useGrabScroll } from "@src/hooks/useGrabScroll";
 
 interface IProps extends HTMLAttributes<HTMLDivElement> {
   height?: CSSProperties["height"];
   maxHeight?: CSSProperties["maxHeight"];
+  scrollAbsolute?: boolean;
 }
 
 function ScrollContainer({
   height = "100%",
   maxHeight = "100%",
+  scrollAbsolute = false,
   className = "",
   children,
+  onScroll,
   ...divProps
 }: IProps) {
   const [trackTop, setTrackTop] = useState(0);
@@ -53,7 +57,8 @@ function ScrollContainer({
     };
   }, [target]);
 
-  function handlerScroll() {
+  function handlerScroll(e: UIEvent<HTMLDivElement>) {
+    onScroll?.(e);
     if (!target.current) return;
     setTrackTop(ratio * target.current.scrollTop);
   }
@@ -70,18 +75,22 @@ function ScrollContainer({
     if (!target.current) return;
     const { top, height } = target.current.getBoundingClientRect();
 
-    target.current.scrollTop =
-      ((e.clientY - top) / height) * (target.current.scrollHeight - height);
+    target.current.scrollTo({
+      top:
+        ((e.clientY - top) / height) * (target.current.scrollHeight - height),
+      behavior: "smooth",
+    });
   }
 
   return (
     <div
-      className={`relative ${className} overflow-hidden group`}
+      className={`relative ${className} flex overflow-hidden group`}
+      onMouseMove={scrollBar.onMouseMove}
       {...divProps}
     >
       <div
         ref={target}
-        className="w-full overflow-hidden"
+        className="flex-1 w-full overflow-hidden"
         style={{
           height,
           maxHeight,
@@ -92,9 +101,13 @@ function ScrollContainer({
         {children}
       </div>
       <div
-        className="absolute top-0 right-0 w-fit h-full opacity-0 transition-opacity duration-300 group/scrollBar group-hover:opacity-100"
+        className={`${
+          scrollAbsolute ? "absolute opacity-0" : "relative opacity-100"
+        } top-0 right-0 w-fit transition-opacity duration-300 group/scrollBar group-hover:opacity-100`}
+        style={{
+          height: target.current?.clientHeight,
+        }}
         onWheel={handlerWheel}
-        onMouseMove={scrollBar.onMouseMove}
       >
         <div className="absolute w-full h-full" onClick={handlerClick} />
         <div

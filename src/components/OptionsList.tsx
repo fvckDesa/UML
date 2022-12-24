@@ -68,6 +68,7 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
         className="min-w-[268px]"
         height={"fit-content"}
         maxHeight={256}
+        scrollAbsolute
       >
         {items.map((item) =>
           isListGroup(item) ? (
