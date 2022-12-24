@@ -10,13 +10,15 @@ interface GrabInfo {
   y: number;
 }
 
-interface Options {
+interface Options<TargetElement extends Element> {
   reverse?: boolean;
+  transformDistance?: (d: number, target: TargetElement) => number;
 }
 
 export function useGrabScroll<TargetElement extends Element>({
   reverse = false,
-}: Options = {}) {
+  transformDistance = (d) => d,
+}: Options<TargetElement> = {}) {
   const [grabInfo, setGrabInfo] = useState<GrabInfo | null>(null);
   const target = useRef<TargetElement>(null);
 
@@ -43,8 +45,8 @@ export function useGrabScroll<TargetElement extends Element>({
   function onMouseMove(e: MouseEvent<TargetElement>) {
     if (!target.current || !grabInfo) return;
 
-    const dx = e.clientX - grabInfo.x;
-    const dy = e.clientY - grabInfo.y;
+    const dx = transformDistance(e.clientX - grabInfo.x, target.current);
+    const dy = transformDistance(e.clientY - grabInfo.y, target.current);
 
     // Scroll the element
     target.current.scrollTop = reverse ? grabInfo.top - dy : grabInfo.top + dy;
