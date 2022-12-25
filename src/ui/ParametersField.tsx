@@ -1,10 +1,11 @@
 // types
 import type { Variable } from "@src/types/class";
-import type { Control, FieldValues, UseFormRegister } from "react-hook-form";
+import { Control, FieldValues, UseFormRegister } from "react-hook-form";
 import type { UIEvent } from "react";
 // components
 import ScrollContainer from "./ScrollContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import TypeList from "@src/components/TypeList";
 // hooks
 import { useFieldArray, useFormState } from "react-hook-form";
 import { useState } from "react";
@@ -27,7 +28,7 @@ interface IProps {
 function ParametersField({ control, register }: IProps) {
   const [isTop, setIsTop] = useState(true);
   const { errors } = useFormState({ control });
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: "parameters",
   });
@@ -81,18 +82,29 @@ function ParametersField({ control, register }: IProps) {
                 data-testid="parameter-name"
                 {...register(`parameters.${i}.name`, { required: true })}
               />
-              <input
-                className={`w-[30%] px-1 text-sm leading-6 outline-none border-2 ${
-                  errors.parameters?.[i]?.type
-                    ? "!border-red-500"
-                    : "border-gray-300"
-                } rounded focus:border-blue-500`}
-                type="text"
-                placeholder="Type"
-                autoComplete="off"
-                data-testid="parameter-type"
-                {...register(`parameters.${i}.type`, { required: true })}
-              />
+              <TypeList
+                onSelectOption={(value) => {
+                  update(i, {
+                    ...field,
+                    type: String(value),
+                  });
+                }}
+              >
+                <input
+                  className={`w-[30%] px-1 text-sm leading-6 outline-none border-2 ${
+                    errors.parameters?.[i]?.type
+                      ? "!border-red-500"
+                      : "border-gray-300"
+                  } rounded focus:border-blue-500`}
+                  type="text"
+                  placeholder="Type"
+                  autoComplete="off"
+                  data-testid="parameter-type"
+                  {...register(`parameters.${i}.type` as const, {
+                    required: true,
+                  })}
+                />
+              </TypeList>
               <label className="relative w-6 h-6 rounded overflow-hidden">
                 <input
                   type="checkbox"
