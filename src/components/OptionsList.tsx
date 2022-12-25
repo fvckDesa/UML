@@ -1,4 +1,11 @@
-import { RefObject, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { ListItem, ItemValue, isListGroup, Item } from "@src/types/optionsList";
 import { getLabel, getValue } from "@src/utils/optionsList";
 import ScrollContainer from "@src/ui/ScrollContainer";
@@ -14,7 +21,7 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const listRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
+  const positionList = useCallback(() => {
     if (!listRef.current || !element.current) return;
 
     const { height: bodyHeight } = document.body.getBoundingClientRect();
@@ -34,6 +41,13 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
       left: elementLeft - width / 2 + elementWidth / 2,
     });
   }, [items, element, listRef]);
+
+  useLayoutEffect(() => {
+    positionList();
+    window.addEventListener("resize", positionList);
+
+    return () => window.removeEventListener("resize", positionList);
+  }, [positionList]);
 
   useEffect(() => {
     function close(e: MouseEvent) {
