@@ -64,6 +64,7 @@ function ScrollContainer({
   }
 
   function handlerWheel(e: WheelEvent) {
+    e.stopPropagation();
     if (!target.current) return;
 
     target.current.scrollBy({
@@ -107,13 +108,11 @@ function ScrollContainer({
         style={{
           height: target.current?.clientHeight,
         }}
+        hidden={ratio >= 1}
         onWheel={handlerWheel}
       >
         <div className="absolute w-full h-full" onClick={handlerClick} />
-        <div
-          className="w-4 h-full px-0.5 py-1 border-l border-transparent overflow-hidden group-hover/scrollBar:w-5 group-hover/scrollBar:border-gray-500 group-hover/scrollBar:bg-white transition-all"
-          hidden={ratio >= 1}
-        >
+        <div className="w-4 h-full px-0.5 py-1 border-l border-transparent overflow-hidden group-hover/scrollBar:w-5 group-hover/scrollBar:border-gray-500 group-hover/scrollBar:bg-white transition-all">
           <div
             className="w-full rounded bg-slate-600"
             style={{
