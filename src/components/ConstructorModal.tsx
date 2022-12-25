@@ -1,17 +1,15 @@
 import ReactDOM from "react-dom";
 // types
-import type { Constructor, Variable } from "@src/types/class";
+import type { Constructor } from "@src/types/class";
 import type { Modal } from "@src/types/modal";
 // components
-import { SelectField, LoaderButton, VariableField, ModalForm } from "@src/ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// hooks
-import { useForm, useFieldArray } from "react-hook-form";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-// icon
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useUMLContext } from "@src/contexts/UML";
+import { SelectField, ModalForm } from "@src/ui";
 import ParametersField from "@src/ui/ParametersField";
+// hooks
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useUMLContext } from "@src/contexts/UML";
+// icon
 
 type IProps = Modal<Constructor>;
 
@@ -52,7 +50,11 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
         options={["public", "private", "protected", "package"]}
         {...register("visibility", { value: "public" })}
       />
-      <ParametersField control={control as any} register={register as any} />
+      <ParametersField
+        control={control as any}
+        register={register as any}
+        setValue={setValue as any}
+      />
     </ModalForm>,
     document.getElementById("modal") as HTMLDivElement
   );

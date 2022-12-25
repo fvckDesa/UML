@@ -59,16 +59,21 @@ function ClassModal({ data, onSave, onClose }: IProps) {
         })}
       />
       <TypeList
-        label={"Return type"}
-        onSelectOption={(value) => setValue("type", String(value))}
-        error={errors.type?.message}
-        {...register("type", {
-          required: `Return type is required`,
-          validate: {
-            ...validation("return type"),
-          },
-        })}
-      />
+        onSelectOption={(value) =>
+          setValue("type", String(value), { shouldValidate: true })
+        }
+      >
+        <InputField
+          label={"Return type"}
+          error={errors.type?.message}
+          {...register("type", {
+            required: `Return type is required`,
+            validate: {
+              ...validation("return type"),
+            },
+          })}
+        />
+      </TypeList>
       <CheckboxField
         text={`Return array of ${watch("type") ?? ""}`}
         {...register("isArray")}

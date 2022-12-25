@@ -1,17 +1,17 @@
 // types
-import type { ComponentPropsWithoutRef, Ref } from "react";
+import type { ComponentProps } from "react";
 import type { ListGroup } from "@src/types/optionsList";
 // components
-import { DataListField } from "@src/ui";
+import { DataList } from "@src/ui";
 // hooks
 import { useUMLContext } from "@src/contexts/UML";
-import { forwardRef, useMemo } from "react";
+import { useMemo } from "react";
 // data
 import { JAVA_TYPES } from "@src/data/types";
 
-type IProps = Omit<ComponentPropsWithoutRef<typeof DataListField>, "options">;
+type IProps = Omit<ComponentProps<typeof DataList>, "options">;
 
-function TypeList(dataListProps: IProps, ref: Ref<HTMLInputElement>) {
+function TypeList(dataListProps: IProps) {
   const { umlClasses } = useUMLContext();
   const options = useMemo(() => {
     const types = Object.entries(JAVA_TYPES).map(([label, items]) => ({
@@ -31,7 +31,7 @@ function TypeList(dataListProps: IProps, ref: Ref<HTMLInputElement>) {
     }, []);
   }, [umlClasses]);
 
-  return <DataListField ref={ref} options={options} {...dataListProps} />;
+  return <DataList options={options} {...dataListProps} />;
 }
 
-export default forwardRef(TypeList);
+export default TypeList;

@@ -56,17 +56,18 @@ function AttributeModal({ data, onSave, onClose }: IProps) {
           },
         })}
       />
-      <TypeList
-        label={"Type"}
-        onSelectOption={(value) => setValue("type", String(value))}
-        error={errors.type?.message}
-        {...register("type", {
-          required: `${"Type"} is required`,
-          validate: {
-            ...validation("type"),
-          },
-        })}
-      />
+      <TypeList onSelectOption={(value) => setValue("type", String(value))}>
+        <InputField
+          label={"Return type"}
+          error={errors.type?.message}
+          {...register("type", {
+            required: `Return type is required`,
+            validate: {
+              ...validation("return type"),
+            },
+          })}
+        />
+      </TypeList>
       <CheckboxField
         text={`Array of ${watch("type") ?? ""}`}
         {...register("isArray")}
