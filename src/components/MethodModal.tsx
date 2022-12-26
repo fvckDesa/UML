@@ -58,11 +58,7 @@ function ClassModal({ data, onSave, onClose }: IProps) {
           },
         })}
       />
-      <TypeList
-        onSelectOption={(value) =>
-          setValue("type", String(value), { shouldValidate: true })
-        }
-      >
+      <TypeList onSelectOption={(value) => setValue("type", String(value))}>
         <InputField
           label={"Return type"}
           error={errors.type?.message}
