@@ -50,11 +50,7 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
         options={["public", "private", "protected", "package"]}
         {...register("visibility", { value: "public" })}
       />
-      <ParametersField
-        control={control as any}
-        register={register as any}
-        setValue={setValue as any}
-      />
+      <ParametersField control={control as any} register={register as any} />
     </ModalForm>,
     document.getElementById("modal") as HTMLDivElement
   );
