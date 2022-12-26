@@ -74,7 +74,7 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
   return (
     <div
       ref={listRef}
-      className="fixed border border-gray-400 rounded-lg bg-white shadow-lg select-none overflow-hidden"
+      className="fixed border border-gray-400 rounded-lg bg-white shadow-lg select-none overflow-hidden z-10"
       style={position}
       onClick={(e) => e.stopPropagation()}
     >
