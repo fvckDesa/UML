@@ -3,6 +3,7 @@ import type { FormEvent, ReactNode } from "react";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoaderButton from "./LoaderButton";
+import ScrollContainer from "./ScrollContainer";
 // icons
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -25,7 +26,7 @@ function ModalForm({ title, isLoading, onSubmit, onClose, children }: IProps) {
         onSubmit={onSubmit}
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
+        <header className="flex justify-between items-center h-12 px-4 py-2 border-b border-gray-300">
           <h1 className="text-lg font-semibold uppercase" data-testid="title">
             {title}
           </h1>
@@ -38,10 +39,12 @@ function ModalForm({ title, isLoading, onSubmit, onClose, children }: IProps) {
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </header>
-        <div className="flex flex-col gap-2 p-6">{children}</div>
-        <footer className="px-4 py-2 border-t border-gray-300">
+        <ScrollContainer maxHeight={"calc(100vh - 40px - 96px)"}>
+          <div className="flex flex-col gap-2 p-6">{children}</div>
+        </ScrollContainer>
+        <footer className="h-12 px-4 py-2 border-t border-gray-300">
           <LoaderButton
-            className="ml-auto border border-slate-300 rounded-md "
+            className="h-full ml-auto border border-slate-300 rounded-md"
             loading={isLoading}
           >
             Save
