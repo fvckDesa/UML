@@ -110,6 +110,7 @@ function ScrollContainer({
         }}
         hidden={ratio >= 1}
         onWheel={handlerWheel}
+        onMouseDownCapture={(e) => e.preventDefault()}
       >
         <div className="absolute w-full h-full" onClick={handlerClick} />
         <div className="w-4 h-full px-0.5 py-1 border-l border-transparent overflow-hidden group-hover/scrollBar:w-5 group-hover/scrollBar:border-gray-500 group-hover/scrollBar:bg-white transition-all">
