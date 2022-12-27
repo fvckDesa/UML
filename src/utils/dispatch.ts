@@ -2,6 +2,8 @@ import type { Dispatch } from "react";
 import type { Relationships } from "@src/types/arrow";
 import type { ClassesAction } from "@src/types/classesReducer";
 import type { ArrowActions } from "@src/types/arrowReducer";
+// uuid
+import { v4 as uuid } from "uuid";
 
 interface INewClass {
   dispatch: Dispatch<ClassesAction>;
@@ -26,7 +28,7 @@ export function dispatchNewClass({ dispatch, name, x, y }: INewClass) {
         x,
         y,
       },
-      id: crypto.randomUUID(),
+      id: uuid(),
     },
   });
 }
@@ -48,7 +50,7 @@ export function dispatchNewArrow({
     dispatch({
       type: "arrow/add",
       payload: {
-        id: crypto.randomUUID(),
+        id: uuid(),
         arrow: {
           relationship,
           nodes: [node, id],
