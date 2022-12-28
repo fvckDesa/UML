@@ -1,14 +1,24 @@
+// types
+import { RefObject } from "react";
+import { ListItem, ItemValue, isListGroup, Item } from "@src/types/optionsList";
+// components
+import ScrollContainer from "@src/ui/ScrollContainer";
+// hooks
+import { useKeydown } from "@src/hooks/useKeydown";
 import {
-  RefObject,
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from "react";
-import { ListItem, ItemValue, isListGroup, Item } from "@src/types/optionsList";
-import { getLabel, getValue } from "@src/utils/optionsList";
-import ScrollContainer from "@src/ui/ScrollContainer";
+// utils
+import {
+  getLabel,
+  getValue,
+  flatItems,
+  getItemIndex,
+} from "@src/utils/optionsList";
 
 export interface IProps {
   items: ListItem[];
@@ -19,7 +29,29 @@ export interface IProps {
 
 function OptionsList({ items, element, onSelect, onClose }: IProps) {
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [focusEl, setFocusEl] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
+
+  useKeydown({
+    target: element.current,
+    events: {
+      ArrowUp: (e) => {
+        e.preventDefault();
+        setFocusEl((prev) => Math.max(prev - 1, 0));
+      },
+      ArrowDown: (e) => {
+        e.preventDefault();
+        setFocusEl((prev) => Math.min(prev + 1, flatItems(items).length - 1));
+      },
+      Enter: (e) => {
+        e.preventDefault();
+        const item = flatItems(items)[focusEl];
+        if (!item) return;
+        onSelect(getValue(item));
+        onClose();
+      },
+    },
+  });
 
   const positionList = useCallback(() => {
     if (!listRef.current || !element.current) return;
@@ -45,8 +77,17 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
   useLayoutEffect(() => {
     positionList();
     window.addEventListener("resize", positionList);
+    const observer = new MutationObserver(positionList);
 
-    return () => window.removeEventListener("resize", positionList);
+    observer.observe(document, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      window.removeEventListener("resize", positionList);
+      observer.disconnect();
+    };
   }, [positionList]);
 
   useEffect(() => {
@@ -68,6 +109,12 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
     return function () {
       onSelect(getValue(item));
       onClose();
+    };
+  }
+
+  function handlerMouseOver(item: Item) {
+    return function () {
+      setFocusEl(getItemIndex(items, item));
     };
   }
 
@@ -93,8 +140,30 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
                   <li
                     key={getLabel(item)}
                     data-list-item={true}
-                    className="flex py-0.5 cursor-pointer hover:bg-blue-500 hover:text-white"
+                    className={`flex py-0.5 cursor-pointer ${
+                      focusEl === getItemIndex(items, item)
+                        ? "bg-blue-500 text-white"
+                        : ""
+                    }`}
                     onClick={handlerSelect(item)}
+                    onMouseOver={handlerMouseOver(item)}
+                    ref={(focusItem) => {
+                      if (
+                        !focusItem ||
+                        !listRef.current ||
+                        focusEl !== getItemIndex(items, item)
+                      )
+                        return;
+                      const { top: listTop, bottom: listBottom } =
+                        listRef.current.getBoundingClientRect();
+                      const { top: itemTop, bottom: itemBottom } =
+                        focusItem.getBoundingClientRect();
+
+                      if (itemTop >= listTop && itemBottom <= listBottom)
+                        return;
+
+                      focusItem.scrollIntoView(itemTop < listTop);
+                    }}
                   >
                     <div className="w-6" />
                     <span>{getLabel(item)}</span>
@@ -103,15 +172,35 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
               </ul>
             </div>
           ) : (
-            <li
+            <div
               key={getLabel(item)}
               data-list-item={true}
-              className="flex cursor-pointer hover:bg-blue-500 hover:text-white first:pt-1 last:pb-1"
+              className={`flex py-0.5 cursor-pointer ${
+                focusEl === getItemIndex(items, item)
+                  ? "bg-blue-500 text-white"
+                  : ""
+              }`}
               onClick={handlerSelect(item)}
+              ref={(focusItem) => {
+                if (
+                  !focusItem ||
+                  !listRef.current ||
+                  focusEl !== getItemIndex(items, item)
+                )
+                  return;
+                const { top: listTop, bottom: listBottom } =
+                  listRef.current.getBoundingClientRect();
+                const { top: itemTop, bottom: itemBottom } =
+                  focusItem.getBoundingClientRect();
+
+                if (itemTop >= listTop && itemBottom <= listBottom) return;
+
+                focusItem.scrollIntoView(itemTop < listTop);
+              }}
             >
               <div className="w-2" />
               <span>{getLabel(item)}</span>
-            </li>
+            </div>
           )
         )}
       </ScrollContainer>

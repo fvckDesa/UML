@@ -27,3 +27,16 @@ export function filterItems(items: ListItem[], filter: string): Item[] {
         .includes(filter.toLowerCase())
     );
 }
+
+export function flatItems(items: ListItem[]) {
+  return items.reduce<Item[]>(
+    (list, item) => list.concat(isListGroup(item) ? [...item.items] : item),
+    []
+  );
+}
+
+export function getItemIndex(items: ListItem[], item: Item): number {
+  return flatItems(items).findIndex(
+    (flatItem) => getLabel(item) === getLabel(flatItem)
+  );
+}
