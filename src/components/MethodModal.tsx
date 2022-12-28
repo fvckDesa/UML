@@ -71,7 +71,7 @@ function ClassModal({ data, onSave, onClose }: IProps) {
         />
       </TypeList>
       <CheckboxField
-        text={`Return array of ${watch("type") ?? ""}`}
+        text={`Return array of ${watch("type") || "<Type>"}`}
         {...register("isArray")}
       />
       <CheckboxField text="Static" {...register("isStatic")} />

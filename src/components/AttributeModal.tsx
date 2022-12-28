@@ -69,7 +69,7 @@ function AttributeModal({ data, onSave, onClose }: IProps) {
         />
       </TypeList>
       <CheckboxField
-        text={`Array of ${watch("type") ?? ""}`}
+        text={`Array of ${watch("type") || "<Type>"}`}
         {...register("isArray")}
       />
       <CheckboxField text="Static" {...register("isStatic")} />
