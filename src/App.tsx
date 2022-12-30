@@ -1,5 +1,5 @@
 // types
-import type { ClickEvents } from "./types/infoReducer";
+import type { ClickEvents } from "./types/uml";
 // components
 import ActionBar from "./components/ActionBar";
 import TopBar from "./components/TopBar";

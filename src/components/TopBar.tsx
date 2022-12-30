@@ -1,6 +1,6 @@
 // types
 import type { DownloadImageInfo } from "@src/types/download";
-import { ClickEvents } from "@src/types/infoReducer";
+import { ClickEvents } from "@src/types/uml";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DownloadModal from "./DownloadModal";

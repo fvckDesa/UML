@@ -1,7 +1,7 @@
 // types
 import type { ElementsKeys } from "@src/data/umlElements";
 import type { DragEvent } from "react";
-import type { ClickEvents } from "@src/types/infoReducer";
+import type { ClickEvents } from "@src/types/uml";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
