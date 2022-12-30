@@ -1,46 +1,34 @@
-import { useUMLContext } from "@src/contexts/UML";
-import DropList from "@src/ui/DropList";
-import Element from "@src/ui/Element";
+// hooks
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { setActiveElement } from "@src/features/umlSlice";
 
 function SidebarElements() {
-  const { umlClasses, umlArrows, umlInfo, dispatchInfo } = useUMLContext();
+  const { data, dispatch } = useRedux((state) => ({
+    elements: state.uml.elements,
+    activeElement: state.uml.activeElement,
+  }));
 
   function handlerClick(id: string) {
-    dispatchInfo({
-      type: "activeClass/change",
-      payload: { id: umlInfo.activeClass === id ? "" : id },
-    });
+    dispatch(setActiveElement(data.activeElement === id ? null : id));
   }
 
   return (
-    <div className="pb-6">
-      <DropList
-        name="Classes"
-        items={Object.entries(umlClasses).map(([id, umlClass]) => ({
-          id,
-          javaClass: umlClass.javaClass,
-        }))}
-      >
-        {({ id, javaClass }) => (
-          <Element
-            key={id}
-            active={umlInfo.activeClass === id}
-            onClick={handlerClick.bind(null, id)}
-          >
-            {javaClass.name}
-          </Element>
-        )}
-      </DropList>
-      <DropList
-        name="Arrows"
-        items={Object.entries(umlArrows.arrows).map(([id, arrow]) => ({
-          id,
-          arrow,
-        }))}
-      >
-        {({ id, arrow }) => <Element key={id}>{arrow.relationship}</Element>}
-      </DropList>
-    </div>
+    <>
+      {Object.entries(data.elements).map(([id, element]) => (
+        <div
+          key={id}
+          className={`px-4 py-2 border-2 ${
+            data.activeElement === id
+              ? "border-blue-500 bg-blue-500 text-white"
+              : "border-transparent"
+          } cursor-pointer hover:border-blue-500`}
+          onClick={() => handlerClick(id)}
+        >
+          {element.data.name}
+        </div>
+      ))}
+    </>
   );
 }
 

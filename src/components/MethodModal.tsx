@@ -3,13 +3,19 @@ import ReactDOM from "react-dom";
 import type { Method } from "@src/types/class";
 import type { Modal } from "@src/types/modal";
 // components
-import { InputField, SelectField, CheckboxField, ModalForm } from "@src/ui";
+import {
+  InputField,
+  SelectField,
+  CheckboxField,
+  ModalForm,
+  ParametersField,
+} from "@src/ui";
+import TypeList from "./TypeList";
 // hooks
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+// utils
 import { validation } from "@src/utils/validate";
-import TypeList from "./TypeList";
-import ParametersField from "@src/ui/ParametersField";
 
 type IProps = Modal<Method>;
 

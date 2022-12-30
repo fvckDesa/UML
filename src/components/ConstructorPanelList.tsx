@@ -1,11 +1,15 @@
 // types
 import type { Constructor } from "@src/types/class";
+import type { ClassElement } from "@src/types/uml";
 // components;
 import PanelList from "./PanelList";
 import ConstructorModal from "./ConstructorModal";
+// hooks
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { updateElementData } from "@src/features/umlSlice";
 // utils
 import { stringifyConstructor } from "@src/utils/class";
-import { useUMLContext } from "@src/contexts/UML";
 
 interface IProps {
   constructors: Constructor[];
@@ -13,27 +17,39 @@ interface IProps {
 }
 
 function ConstructorPanelList({ constructors, classId }: IProps) {
-  const { dispatchClasses } = useUMLContext();
+  const { data: classConstructors, dispatch } = useRedux(
+    (state) => (state.uml.elements[classId] as ClassElement).data.constructors
+  );
 
   function handlerCreate(data: Constructor) {
-    dispatchClasses({
-      type: "constructor/add",
-      payload: { id: classId, constructor: data },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: { constructors: classConstructors.concat(data) },
+      })
+    );
   }
 
   function handlerUpdate(data: Constructor, index: number) {
-    dispatchClasses({
-      type: "constructor/update",
-      payload: { id: classId, constructor: data, index },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: {
+          constructors: classConstructors.map((constr, i) =>
+            i === index ? data : constr
+          ),
+        },
+      })
+    );
   }
 
   function handlerRemove(index: number) {
-    dispatchClasses({
-      type: "constructor/remove",
-      payload: { id: classId, index },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: { constructors: classConstructors.filter((_, i) => i !== index) },
+      })
+    );
   }
 
   return (

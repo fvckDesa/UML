@@ -3,12 +3,9 @@ export interface Coords {
   y: number;
 }
 
-export interface ActionGenerator<Type extends string, Payload extends {}> {
-  type: Type;
-  payload: Payload;
-}
-
 export interface Dimensions {
   width: number;
   height: number;
 }
+
+export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;

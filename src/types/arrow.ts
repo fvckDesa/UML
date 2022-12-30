@@ -5,6 +5,6 @@ export type Relationships =
   | "composition";
 
 export interface Arrow {
+  name: string;
   relationship: Relationships;
-  nodes: [string, string];
 }

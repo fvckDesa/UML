@@ -1,8 +1,9 @@
-import { useState } from "react";
+// components
 import SidebarClass from "./SidebarClass";
-import { useUMLContext } from "@src/contexts/UML";
 import SidebarElements from "./SidebarElements";
 import ScrollContainer from "@src/ui/ScrollContainer";
+// hooks
+import { useState } from "react";
 
 const PAGES = ["elements", "class"] as const;
 const PageWidth = 320 / PAGES.length;
@@ -11,12 +12,11 @@ type Pages = typeof PAGES[number];
 
 function Sidebar() {
   const [currentPage, setCurrentPage] = useState<Pages>(PAGES[0]);
-  const { umlInfo } = useUMLContext();
 
   return (
     <div
       className={`absolute top-0 ${
-        umlInfo.isMenuOpen ? "right-0" : "-right-80"
+        false ? "right-0" : "-right-80"
       }  flex-1 flex flex-col w-80 h-full border-l-2 border-gray-400 bg-white transition-all`}
     >
       <header>

@@ -1,32 +1,26 @@
 // types
 import type { DragEvent, MouseEvent } from "react";
-import type { Coords } from "@src/types/general";
 // components
 import Class from "./Class";
-import Arrow from "./Arrow";
-import NewArrow from "./NewArrow";
 // hooks
-import { useUMLContext } from "@src/contexts/UML";
-import { useRef, useState, useEffect } from "react";
-// utils
-import { dispatchNewClass } from "@src/utils/dispatch";
+import { useRef } from "react";
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { addElement } from "@src/features/umlSlice";
 // data
 import { UML_ELEMENTS, isUMLElement } from "@src/data/umlElements";
 
 interface IProps {
   width: number;
   height: number;
-  onActiveClass: (coords: Coords) => void;
 }
 
-function WorkSpace({ width, height, onActiveClass }: IProps) {
-  const { umlClasses, dispatchClasses, umlArrows, umlInfo } = useUMLContext();
+function WorkSpace({ width, height }: IProps) {
+  const { data, dispatch } = useRedux((state) => ({
+    elements: state.uml.elements,
+    clickEvent: state.uml.clickEvent,
+  }));
   const ref = useRef<HTMLDivElement>(null);
-  const [pointer, setPointer] = useState<Coords | null>(null);
-
-  useEffect(() => {
-    setPointer(null);
-  }, [umlArrows.newArrow]);
 
   function handlerDragOver(e: DragEvent<HTMLDivElement>) {
     e.preventDefault();
@@ -39,38 +33,32 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
       const { width, height } = UML_ELEMENTS[element].dimensions;
       const { x, y } = ref.current.getBoundingClientRect();
 
-      dispatchNewClass({
-        dispatch: dispatchClasses,
-        name: `Class${Object.values(umlClasses).length + 1}`,
-        x: Math.abs(x) + e.clientX - width / 2,
-        y: Math.abs(y) + e.clientY - height / 2,
-      });
+      dispatch(
+        addElement({
+          type: "class",
+          layout: {
+            x: Math.abs(x) + e.clientX - width / 2,
+            y: Math.abs(y) + e.clientY - height / 2,
+          },
+        })
+      );
     }
   }
 
-  function changePointerCoords(e: MouseEvent<HTMLDivElement>) {
-    if (!ref.current) return;
-
-    const { x, y } = ref.current.getBoundingClientRect();
-
-    setPointer({
-      x: Math.abs(x) + e.clientX,
-      y: Math.abs(y) + e.clientY,
-    });
-  }
-
   function handlerClick(e: MouseEvent<HTMLDivElement>) {
-    if (umlInfo.clickEvent?.type === "element" && ref.current) {
-      const { width, height } =
-        UML_ELEMENTS[umlInfo.clickEvent.info].dimensions;
+    if (data.clickEvent?.type === "element" && ref.current) {
+      const { width, height } = UML_ELEMENTS[data.clickEvent.info].dimensions;
       const { x, y } = ref.current.getBoundingClientRect();
 
-      dispatchNewClass({
-        dispatch: dispatchClasses,
-        name: `Class${Object.values(umlClasses).length + 1}`,
-        x: Math.abs(x) + e.clientX - width / 2,
-        y: Math.abs(y) + e.clientY - height / 2,
-      });
+      dispatch(
+        addElement({
+          type: "class",
+          layout: {
+            x: Math.abs(x) + e.clientX - width / 2,
+            y: Math.abs(y) + e.clientY - height / 2,
+          },
+        })
+      );
     }
   }
 
@@ -82,19 +70,19 @@ function WorkSpace({ width, height, onActiveClass }: IProps) {
       style={{ width, height }}
       onDrop={handlerDrop}
       onDragOver={handlerDragOver}
-      onMouseMove={umlArrows.newArrow ? changePointerCoords : undefined}
       onClick={handlerClick}
     >
-      {Object.keys(umlClasses).map((id) => (
-        <Class key={id} id={id} onClassSelect={onActiveClass} container={ref} />
-      ))}
-      <svg width={width} height={height}>
-        {umlArrows.newArrow && pointer && (
-          <NewArrow node={umlArrows.newArrow} pointer={pointer} />
-        )}
-        {Object.keys(umlArrows.arrows).map((id) => (
-          <Arrow key={id} id={id} />
+      {Object.keys(data.elements)
+        .filter((id) => data.elements[id].type !== "arrow")
+        .map((id) => (
+          <Class key={id} id={id} container={ref} />
         ))}
+      <svg width={width} height={height}>
+        {Object.keys(data.elements)
+          .filter((id) => data.elements[id].type === "arrow")
+          .map((id) => (
+            <>{/* <Arrow key={id} id={id} /> */}</>
+          ))}
       </svg>
     </div>
   );

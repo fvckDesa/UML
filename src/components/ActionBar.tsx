@@ -1,42 +1,25 @@
-// types
-import type { ClickEvents } from "@src/types/infoReducer";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UMLElementButton from "./UMLElementButton";
 // hooks
 import { useState, useEffect } from "react";
+// redux
+import { setClickEvent } from "@src/features/umlSlice";
 // icons
 import { ClassIcon } from "@src/assets";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 // data
-import { useUMLContext } from "@src/contexts/UML";
+import { useRedux } from "@src/hooks/useRedux";
 
 function ActionBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { umlInfo, dispatchInfo } = useUMLContext();
+  const { data, dispatch } = useRedux((state) => state.uml.clickEvent);
 
   useEffect(() => {
-    if (isOpen === false && umlInfo.clickEvent?.type === "element") {
-      dispatchInfo({
-        type: "clickEvent/change",
-        payload: {
-          clickEvent: null,
-        },
-      });
+    if (isOpen === false && data?.type === "element") {
+      dispatch(setClickEvent(null));
     }
   }, [isOpen]);
-
-  function handlerClick(clickEvent: ClickEvents) {
-    return function () {
-      dispatchInfo({
-        type: "clickEvent/change",
-        payload: {
-          clickEvent:
-            umlInfo.clickEvent?.type === clickEvent?.type ? null : clickEvent,
-        },
-      });
-    };
-  }
 
   return (
     <div className="absolute bottom-8 left-8">

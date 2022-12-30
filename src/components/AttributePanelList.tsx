@@ -1,11 +1,15 @@
 // types
 import type { Attribute } from "@src/types/class";
+import type { ClassElement } from "@src/types/uml";
 // components
 import PanelList from "./PanelList";
 import AttributeModal from "./AttributeModal";
+// hooks
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { updateElementData } from "@src/features/umlSlice";
 // utils
 import { stringifyAttribute } from "@src/utils/class";
-import { useUMLContext } from "@src/contexts/UML";
 
 interface IProps {
   attributes: Attribute[];
@@ -13,27 +17,39 @@ interface IProps {
 }
 
 function AttributePanelList({ attributes, classId }: IProps) {
-  const { dispatchClasses } = useUMLContext();
+  const { data: classAttributes, dispatch } = useRedux(
+    (state) => (state.uml.elements[classId] as ClassElement).data.attributes
+  );
 
   function handlerCreate(data: Attribute) {
-    dispatchClasses({
-      type: "attribute/add",
-      payload: { id: classId, attribute: data },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: { attributes: classAttributes.concat(data) },
+      })
+    );
   }
 
   function handlerUpdate(data: Attribute, index: number) {
-    dispatchClasses({
-      type: "attribute/update",
-      payload: { id: classId, attribute: data, index },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: {
+          attributes: classAttributes.map((attr, i) =>
+            i === index ? data : attr
+          ),
+        },
+      })
+    );
   }
 
   function handlerDelete(index: number) {
-    dispatchClasses({
-      type: "attribute/remove",
-      payload: { id: classId, index },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: { attributes: classAttributes.filter((_, i) => i !== index) },
+      })
+    );
   }
 
   return (

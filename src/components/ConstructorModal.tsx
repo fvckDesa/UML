@@ -3,18 +3,20 @@ import ReactDOM from "react-dom";
 import type { Constructor } from "@src/types/class";
 import type { Modal } from "@src/types/modal";
 // components
-import { SelectField, ModalForm } from "@src/ui";
-import ParametersField from "@src/ui/ParametersField";
+import { SelectField, ModalForm, ParametersField } from "@src/ui";
 // hooks
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { useUMLContext } from "@src/contexts/UML";
-// icon
+import { useAppSelector } from "@src/hooks/useRedux";
 
 type IProps = Modal<Constructor>;
 
 function ConstructorsModal({ data, onSave, onClose }: IProps) {
-  const { umlInfo, umlClasses } = useUMLContext();
+  const name = useAppSelector((state) =>
+    state.uml.activeElement
+      ? state.uml.elements[state.uml.activeElement].data.name
+      : null
+  );
   const {
     register,
     handleSubmit,
@@ -33,7 +35,7 @@ function ConstructorsModal({ data, onSave, onClose }: IProps) {
   function onSubmit(newData: Constructor) {
     onSave({
       ...newData,
-      name: umlClasses[umlInfo.activeClass].javaClass.name,
+      name: name ?? "",
     });
     onClose();
   }

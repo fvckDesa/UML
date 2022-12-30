@@ -5,7 +5,9 @@ import type { ClickEvents } from "@src/types/infoReducer";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
-import { useUMLContext } from "@src/contexts/UML";
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { setClickEvent } from "@src/features/umlSlice";
 // icons
 import { faBan } from "@fortawesome/free-solid-svg-icons";
 // data
@@ -17,10 +19,8 @@ interface IProps {
 }
 
 function UMLElementButton({ element, icon }: IProps) {
-  const { umlInfo, dispatchInfo } = useUMLContext();
-  const isActive =
-    umlInfo.clickEvent?.type === "element" &&
-    umlInfo.clickEvent?.info === element;
+  const { data, dispatch } = useRedux((state) => state.uml.clickEvent);
+  const isActive = data?.type === "element" && data?.info === element;
 
   function handlerDragStart(element: ElementsKeys) {
     const { dimensions, img } = UML_ELEMENTS[element];
@@ -37,12 +37,7 @@ function UMLElementButton({ element, icon }: IProps) {
 
   function handlerClick(clickEvent: ClickEvents) {
     return function () {
-      dispatchInfo({
-        type: "clickEvent/change",
-        payload: {
-          clickEvent: isActive ? null : clickEvent,
-        },
-      });
+      dispatch(setClickEvent(isActive ? null : clickEvent));
     };
   }
 

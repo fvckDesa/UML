@@ -6,8 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DownloadModal from "./DownloadModal";
 import ToggleBtn from "@src/ui/ToggleBtn";
 // hooks
-import { useUMLContext } from "@src/contexts/UML";
 import { useState } from "react";
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { setClickEvent } from "@src/features/umlSlice";
 // icons
 import {
   faDownload,
@@ -21,8 +23,11 @@ import {
 import { saveAs } from "@src/utils/download";
 
 function TopBar() {
-  const { umlInfo, dispatchInfo } = useUMLContext();
   const [isOpen, setIsOpen] = useState(false);
+  const { data, dispatch } = useRedux((state) => ({
+    clickEvent: state.uml.clickEvent,
+    haveError: Object.values(state.uml.errors).length > 0,
+  }));
 
   async function handlerSave({ type, name }: DownloadImageInfo) {
     const workspace = document.querySelector("#workspace") as HTMLElement;
@@ -38,38 +43,29 @@ function TopBar() {
 
   function handlerActive(clickEvent: ClickEvents) {
     return function () {
-      dispatchInfo({
-        type: "clickEvent/change",
-        payload: {
-          clickEvent:
-            umlInfo.clickEvent?.type === clickEvent?.type ? null : clickEvent,
-        },
-      });
+      dispatch(
+        setClickEvent(
+          data.clickEvent?.type === clickEvent?.type ? null : clickEvent
+        )
+      );
     };
-  }
-
-  function handlerMenu() {
-    dispatchInfo({
-      type: "menu/toggle",
-      payload: {},
-    });
   }
 
   return (
     <header className="flex justify-between items-center w-full h-12 px-6 py-2 border-b-2 border-gray-600">
       <div className="flex justify-center items-center gap-2">
         <ToggleBtn
-          active={umlInfo.clickEvent?.type === "arrow"}
+          active={data.clickEvent?.type === "arrow"}
           icon={faArrowTrendUp}
           onClick={handlerActive({ type: "arrow" })}
         />
         <ToggleBtn
-          active={umlInfo.clickEvent?.type === "delete"}
+          active={data.clickEvent?.type === "delete"}
           icon={faTrashCan}
           onClick={handlerActive({ type: "delete" })}
         />
         <ToggleBtn
-          active={umlInfo.clickEvent?.type === "move"}
+          active={data.clickEvent?.type === "move"}
           icon={faArrowsUpDownLeftRight}
           onClick={handlerActive({ type: "move" })}
         />
@@ -78,7 +74,7 @@ function TopBar() {
         <button
           className="btnAction w-8 h-8 disabled:cursor-not-allowed"
           onClick={() => setIsOpen(true)}
-          disabled={Object.values(umlInfo.errors).length > 0}
+          disabled={data.haveError}
         >
           <FontAwesomeIcon icon={faDownload} />
           {isOpen && (
@@ -88,8 +84,8 @@ function TopBar() {
             />
           )}
         </button>
-        <button className="btnAction w-8 h-8" onClick={handlerMenu}>
-          <FontAwesomeIcon icon={umlInfo.isMenuOpen ? faXmark : faBars} />
+        <button className="btnAction w-8 h-8">
+          <FontAwesomeIcon icon={false ? faXmark : faBars} />
         </button>
       </div>
     </header>

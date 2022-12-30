@@ -1,5 +1,6 @@
 // types
 import type { ChangeEvent } from "react";
+import type { ClassElement } from "@src/types/uml";
 // components
 import { CheckboxField, InputField } from "@src/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,98 +8,81 @@ import AttributePanelList from "./AttributePanelList";
 import ConstructorPanelList from "./ConstructorPanelList";
 import MethodPanelList from "./MethodPanelList";
 // hooks
-import { useUMLContext } from "@src/contexts/UML";
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import {
+  deleteElement,
+  deleteError,
+  setError,
+  updateElementData,
+} from "@src/features/umlSlice";
 // utils
 import { createClassCode } from "@src/utils/code";
 // icons
 import { faCode } from "@fortawesome/free-solid-svg-icons";
 
 function SidebarClass() {
-  const {
-    umlClasses,
-    dispatchClasses,
-    umlInfo: { activeClass, errors },
-    dispatchInfo,
-    umlArrows,
-    dispatchArrow,
-  } = useUMLContext();
-  const { javaClass } = umlClasses[activeClass] ?? {};
+  const { data, dispatch } = useRedux((state) => ({
+    classEl: state.uml.activeElement
+      ? (state.uml.elements[state.uml.activeElement] as ClassElement)
+      : null,
+    activeClass: state.uml.activeElement,
+    error: state.uml.activeElement
+      ? state.uml.errors[state.uml.activeElement]
+      : null,
+  }));
+  const { activeClass, classEl, error } = data;
 
   function handlerNameChange(newName: string) {
+    if (!activeClass) return;
     if (newName === "") {
-      dispatchInfo({
-        type: "error/change",
-        payload: {
-          id: activeClass,
-          error: {
-            type: "required",
-            message: "Name of class is required",
-          },
-        },
-      });
-    } else if (/^[a-z]/.test(newName)) {
-      dispatchInfo({
-        type: "error/change",
-        payload: {
-          id: activeClass,
-          error: {
-            type: "startUppercase",
-            message: "Must start with uppercase letter",
-          },
-        },
-      });
+      dispatch(
+        setError({ id: activeClass, message: "Name of class is required" })
+      );
     } else {
-      dispatchInfo({
-        type: "error/remove",
-        payload: { id: activeClass },
-      });
+      dispatch(deleteError(activeClass));
     }
 
-    dispatchClasses({
-      type: "class/name",
-      payload: { id: activeClass, name: newName },
-    });
+    dispatch(updateElementData({ id: activeClass, data: { name: newName } }));
   }
 
   function handlerFinalChange(e: ChangeEvent<HTMLInputElement>) {
-    dispatchClasses({
-      type: "class/final",
-      payload: { id: activeClass, isFinal: e.target.checked },
-    });
+    if (!activeClass) return;
+    dispatch(
+      updateElementData({
+        id: activeClass,
+        data: { isFinal: e.target.checked },
+      })
+    );
   }
 
   function handlerMainChange(e: ChangeEvent<HTMLInputElement>) {
-    dispatchClasses({
-      type: "class/main",
-      payload: { id: activeClass, haveMain: e.target.checked },
-    });
+    if (!activeClass) return;
+    dispatch(
+      updateElementData({
+        id: activeClass,
+        data: { haveMain: e.target.checked },
+      })
+    );
   }
 
   function handlerDelete() {
-    dispatchClasses({ type: "class/remove", payload: { id: activeClass } });
-
-    for (const [id, arrow] of Object.entries(umlArrows.arrows)) {
-      if (arrow.nodes.includes(activeClass)) {
-        dispatchArrow({
-          type: "arrow/remove",
-          payload: { id },
-        });
-      }
-    }
+    if (!activeClass) return;
+    dispatch(deleteElement(activeClass));
   }
 
   function handlerCode() {
-    if (!activeClass) return;
-    const code = createClassCode(javaClass);
+    if (!classEl) return;
+    const code = createClassCode(classEl.data);
     const url = URL.createObjectURL(new File([code], ""));
     const link = document.createElement("a");
-    link.download = `${javaClass.name}.java`;
+    link.download = `${classEl.data.name}.java`;
     link.href = url;
     link.click();
     URL.revokeObjectURL(url);
   }
 
-  if (!activeClass || !javaClass) {
+  if (!activeClass || !classEl) {
     return (
       <div className="flex justify-center items-center w-full h-full">
         <span>Select a class</span>
@@ -114,36 +98,36 @@ function SidebarClass() {
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             handlerNameChange(e.target.value)
           }
-          value={javaClass.name}
-          error={errors[activeClass]?.message}
+          value={classEl.data.name}
+          error={error || undefined}
         />
         <CheckboxField
           text="Final"
           onChange={handlerFinalChange}
-          checked={javaClass.isFinal}
+          checked={classEl.data.isFinal}
         />
         <CheckboxField
           text="Main"
           onChange={handlerMainChange}
-          checked={javaClass.haveMain}
+          checked={classEl.data.haveMain}
         />
       </div>
       <AttributePanelList
-        attributes={javaClass.attributes}
+        attributes={classEl.data.attributes}
         classId={activeClass}
       />
       <ConstructorPanelList
-        constructors={javaClass.constructors}
+        constructors={classEl.data.constructors}
         classId={activeClass}
       />
-      <MethodPanelList methods={javaClass.methods} classId={activeClass} />
+      <MethodPanelList methods={classEl.data.methods} classId={activeClass} />
       <footer className="flex justify-between items-center w-full p-4 bg-white mt-auto">
         <button
           className="btnAction w-10 h-10 border opacity-100 border-gray-500 transition-opacity duration-300"
           type="button"
           onClick={handlerCode}
           data-testid="code-btn"
-          disabled={!!errors[activeClass]}
+          disabled={!!error}
         >
           <FontAwesomeIcon icon={faCode} />
         </button>

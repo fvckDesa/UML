@@ -1,9 +1,15 @@
 // types
 import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
-import type { Coords } from "@src/types/general";
+import type { ClassElement } from "@src/types/uml";
 // hooks
 import { useCallback, useEffect, useRef } from "react";
-import { useUMLContext } from "@src/contexts/UML";
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import {
+  deleteElement,
+  setActiveElement,
+  updateElementLayout,
+} from "@src/features/umlSlice";
 // utils
 import {
   stringifyAttribute,
@@ -11,31 +17,24 @@ import {
   stringifyConstructor,
   stringifyMethod,
 } from "@src/utils/class";
-import { dispatchNewArrow } from "@src/utils/dispatch";
 // data
 import { MAIN_METHOD } from "@src/data/class";
 
 interface IProps {
   id: string;
   container?: RefObject<HTMLDivElement>;
-  onClassSelect: (centerCoords: Coords) => void;
 }
 
-function Class({ id, container, onClassSelect }: IProps) {
+function Class({ id, container }: IProps) {
   const grabPoint = useRef({ x: 0, y: 0 });
   const classRef = useRef<HTMLDivElement>(null);
-  const {
-    umlClasses,
-    dispatchClasses,
-    umlInfo,
-    dispatchInfo,
-    umlArrows,
-    dispatchArrow,
-  } = useUMLContext();
-  const {
-    javaClass: { name, isFinal, haveMain, attributes, constructors, methods },
-    coords,
-  } = umlClasses[id];
+  const { data, dispatch } = useRedux((state) => ({
+    element: state.uml.elements[id] as ClassElement,
+    error: state.uml.errors[id],
+    activeElement: state.uml.activeElement,
+    clickEvent: state.uml.clickEvent,
+  }));
+  const { element, error, activeElement } = data;
 
   const handlerMouseMove = useCallback((e: MouseEvent) => {
     if (!container?.current || !classRef.current) return;
@@ -45,11 +44,10 @@ function Class({ id, container, onClassSelect }: IProps) {
 
     const { width, height } = getComputedStyle(classRef.current);
 
-    dispatchClasses({
-      type: "coords/update",
-      payload: {
+    dispatch(
+      updateElementLayout({
         id,
-        coords: {
+        layout: {
           x: Math.min(
             Math.max(e.clientX - grabPoint.current.x, 0),
             containerWidth - parseFloat(width)
@@ -59,8 +57,8 @@ function Class({ id, container, onClassSelect }: IProps) {
             containerHeight - parseFloat(height)
           ),
         },
-      },
-    });
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -74,61 +72,29 @@ function Class({ id, container, onClassSelect }: IProps) {
     };
   }, [handlerMouseMove]);
 
-  useEffect(() => {
-    dispatchClasses({
-      type: "ref/update",
-      payload: {
-        id,
-        ref: classRef.current,
-      },
-    });
-  }, [classRef]);
-
   function handlerMouseDown(e: ReactMouseEvent) {
     e.preventDefault();
-    if (!classRef.current || e.button == 1 || umlInfo.clickEvent) return;
+    if (!classRef.current || e.button == 1 || data.clickEvent) return;
 
     grabPoint.current = {
-      x: e.clientX - coords.x,
-      y: e.clientY - coords.y,
+      x: e.clientX - element.layout.x,
+      y: e.clientY - element.layout.y,
     };
 
     window.addEventListener("mousemove", handlerMouseMove);
   }
 
   function handlerClassSelect() {
-    if (!classRef.current) return;
-    const { width, height } = classRef.current.getBoundingClientRect();
-    onClassSelect({
-      x: coords.x + width / 2,
-      y: coords.y + height / 2,
-    });
-
-    dispatchInfo({ type: "activeClass/change", payload: { id } });
-    dispatchInfo({ type: "menu/toggle", payload: { force: true } });
+    dispatch(setActiveElement(id));
   }
 
   function handlerClick() {
-    switch (umlInfo.clickEvent?.type) {
-      case "arrow": {
-        return dispatchNewArrow({
-          dispatch: dispatchArrow,
-          id,
-          node: umlArrows.newArrow,
-          relationship: "association",
-        });
-      }
+    switch (data.clickEvent?.type) {
       case "delete": {
-        if (umlInfo.activeClass === id) {
-          dispatchInfo({
-            type: "activeClass/change",
-            payload: { id: "" },
-          });
+        if (data.activeElement === id) {
+          dispatch(setActiveElement(null));
         }
-        return dispatchClasses({
-          type: "class/remove",
-          payload: { id },
-        });
+        return dispatch(deleteElement(id));
       }
     }
   }
@@ -137,11 +103,11 @@ function Class({ id, container, onClassSelect }: IProps) {
     <div
       ref={classRef}
       data-class-id={id}
-      style={{ top: coords.y, left: coords.x }}
+      style={{ top: element.layout.y, left: element.layout.x }}
       className={`javaClass absolute min-w-[220px] w-max ${
-        umlInfo.activeClass === id && umlInfo.isMenuOpen
+        activeElement === id
           ? "border-4 border-blue-500 shadow-lg"
-          : umlInfo.errors[id]
+          : error
           ? "border-4 border-red-500"
           : "border-2 border-gray-400"
       } rounded-lg overflow-hidden font-medium cursor-pointer bg-white transition-border duration-300`}
@@ -153,10 +119,10 @@ function Class({ id, container, onClassSelect }: IProps) {
         className="text-lg text-center font-semibold p-2 border-b-2 border-gray-400 bg-gray-200"
         data-testid="name"
       >
-        {stringifyFinal(name || "Class", isFinal)}
+        {stringifyFinal(element.data.name || "Class", element.data.isFinal)}
       </h1>
       <ul className="min-h-[50px] p-2 border-b-2 border-gray-400 transition-all">
-        {attributes.map((attribute, i) => (
+        {element.data.attributes.map((attribute, i) => (
           <li
             key={attribute.name + i}
             className={`${
@@ -169,7 +135,7 @@ function Class({ id, container, onClassSelect }: IProps) {
         ))}
       </ul>
       <ul className="min-h-[50px] p-2">
-        {constructors.map((constructor, i) => (
+        {element.data.constructors.map((constructor, i) => (
           <li
             key={constructor.name + i}
             className="underline-offset-2"
@@ -178,12 +144,12 @@ function Class({ id, container, onClassSelect }: IProps) {
             {stringifyConstructor(constructor)}
           </li>
         ))}
-        {haveMain && (
+        {element.data.haveMain && (
           <li className="underline underline-offset-2">
             {stringifyMethod(MAIN_METHOD)}
           </li>
         )}
-        {methods.map((method, i) => (
+        {element.data.methods.map((method, i) => (
           <li
             key={method.name + i}
             className={`${

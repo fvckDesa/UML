@@ -1,11 +1,15 @@
 // types
 import type { Method } from "@src/types/class";
+import type { ClassElement } from "@src/types/uml";
 // components;
 import PanelList from "./PanelList";
 import MethodModal from "./MethodModal";
+// hooks
+import { useRedux } from "@src/hooks/useRedux";
+// redux
+import { updateElementData } from "@src/features/umlSlice";
 // utils
 import { stringifyMethod } from "@src/utils/class";
-import { useUMLContext } from "@src/contexts/UML";
 
 interface IProps {
   methods: Method[];
@@ -13,24 +17,39 @@ interface IProps {
 }
 
 function MethodPanelList({ methods, classId }: IProps) {
-  const { dispatchClasses } = useUMLContext();
+  const { data: classMethods, dispatch } = useRedux(
+    (state) => (state.uml.elements[classId] as ClassElement).data.methods
+  );
 
   function handlerCreate(data: Method) {
-    dispatchClasses({
-      type: "method/add",
-      payload: { id: classId, method: data },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: { methods: classMethods.concat(data) },
+      })
+    );
   }
 
   function handlerUpdate(data: Method, index: number) {
-    dispatchClasses({
-      type: "method/update",
-      payload: { id: classId, method: data, index },
-    });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: {
+          methods: classMethods.map((constr, i) =>
+            i === index ? data : constr
+          ),
+        },
+      })
+    );
   }
 
   function handlerRemove(index: number) {
-    dispatchClasses({ type: "method/remove", payload: { id: classId, index } });
+    dispatch(
+      updateElementData({
+        id: classId,
+        data: { methods: classMethods.filter((_, i) => i !== index) },
+      })
+    );
   }
 
   return (

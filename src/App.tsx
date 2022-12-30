@@ -1,60 +1,48 @@
-import { useEffect, useState } from "react";
+// types
+import type { ClickEvents } from "./types/infoReducer";
+// components
 import ActionBar from "./components/ActionBar";
-import ClassPanel from "./components/ClassPanel";
 import TopBar from "./components/TopBar";
 import ViewArea from "./components/ViewArea";
-import { useUMLContext } from "./contexts/UML";
-import { useKeydown } from "./hooks/useKeydown";
-import { ClickEvents } from "./types/infoReducer";
 import Sidebar from "./components/Sidebar";
+// hooks
+import { useKeydown } from "./hooks/useKeydown";
+import { useRedux } from "./hooks/useRedux";
+// redux
+import {
+  deleteElement,
+  setActiveElement,
+  setClickEvent,
+} from "./features/umlSlice";
 
 function App() {
-  const { umlInfo, dispatchClasses, dispatchInfo, dispatchArrow } =
-    useUMLContext();
+  const { data, dispatch } = useRedux((state) => ({
+    clickEvent: state.uml.clickEvent,
+    activeElement: state.uml.activeElement,
+  }));
 
   function KeydownEventGenerator(event: ClickEvents) {
     return function () {
-      dispatchInfo({
-        type: "clickEvent/change",
-        payload: {
-          clickEvent: umlInfo.clickEvent?.type === event?.type ? null : event,
-        },
-      });
+      dispatch(
+        setClickEvent(data.clickEvent?.type === event?.type ? null : event)
+      );
     };
   }
 
   useKeydown({
     target: window,
     events: {
-      beforeEach: () => {
-        dispatchArrow({
-          type: "arrow/cancel",
-          payload: {},
-        });
-      },
       Escape: () => {
-        if (umlInfo.clickEvent === null) {
-          return dispatchInfo({
-            type: "activeClass/change",
-            payload: { id: "" },
-          });
+        if (data.clickEvent === null) {
+          return dispatch(setActiveElement(null));
         }
-        KeydownEventGenerator(null)();
+        dispatch(setClickEvent(null));
       },
       a: KeydownEventGenerator({ type: "arrow" }),
       d: KeydownEventGenerator({ type: "delete" }),
       m: KeydownEventGenerator({ type: "move" }),
       Backspace: () => {
-        dispatchClasses({
-          type: "class/remove",
-          payload: { id: umlInfo.activeClass },
-        });
-      },
-      t: () => {
-        dispatchInfo({
-          type: "menu/toggle",
-          payload: {},
-        });
+        if (data.activeElement) dispatch(deleteElement(data.activeElement));
       },
     },
   });
