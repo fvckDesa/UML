@@ -36,9 +36,7 @@ function ViewArea() {
       ref={target}
       data-grabbing={isGrabbing}
       data-click-event={clickEvent?.type}
-      className={`relative h-full ${
-        false ? "mr-80" : "mr-0"
-      } transition-all overflow-hidden`}
+      className="flex-1 transition-all overflow-hidden"
       onMouseDown={handlerRoleDown}
       onMouseMove={onMouseMove}
       onContextMenu={(e) => e.preventDefault()}

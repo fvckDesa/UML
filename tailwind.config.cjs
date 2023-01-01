@@ -12,6 +12,13 @@ module.exports = {
       transitionProperty: {
         border: "border-width, border-color",
       },
+      spacing: {
+        "top-bar": "var(--top-bar)",
+        "bottom-bar": "var(--bottom-bar)",
+        "left-bar-tabs": "var(--left-bar-tabs)",
+        "left-bar-panel": "var(--left-bar-panel)",
+        "right-bar": "var(--right-bar)",
+      },
     },
   },
   plugins: [],

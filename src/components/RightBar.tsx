@@ -1,23 +1,27 @@
 // components
-import SidebarClass from "./SidebarClass";
-import SidebarElements from "./SidebarElements";
+import { useAppSelector } from "@src/hooks/useRedux";
+import Data from "./Data";
 import ScrollContainer from "@src/ui/ScrollContainer";
+import PullBar from "./PullBar";
 // hooks
 import { useState } from "react";
+// utils
+import { isViewMaximize } from "@src/utils/editor";
 
-const PAGES = ["elements", "class"] as const;
+const PAGES = ["data", "layout"] as const;
 const PageWidth = 320 / PAGES.length;
 
 type Pages = typeof PAGES[number];
 
-function Sidebar() {
+function RightBar() {
   const [currentPage, setCurrentPage] = useState<Pages>(PAGES[0]);
+  const barsStatus = useAppSelector((state) => state.editor.barsStatus);
 
   return (
     <div
-      className={`absolute top-0 ${
-        false ? "right-0" : "-right-80"
-      }  flex-1 flex flex-col w-80 h-full border-l-2 border-gray-400 bg-white transition-all`}
+      className={`relative flex flex-col w-right-bar border-l-2 border-gray-400 ${
+        barsStatus.right ? "mr-0" : "-mr-right-bar"
+      } bg-white transition-all`}
     >
       <header>
         <div className="flex items-center">
@@ -33,21 +37,24 @@ function Sidebar() {
             </div>
           ))}
         </div>
-        <div className="relative w-full h-1 bg-gray-300">
+        <div className="relative w-full h-1.5 border-b border-gray-300">
           <div
-            className="absolute top-0 h-full bg-blue-500 transition-all"
+            className="absolute top-0 flex justify-center h-full transition-all"
             style={{
               width: PageWidth,
               left: PageWidth * PAGES.indexOf(currentPage),
             }}
-          />
+          >
+            <div className="w-5/6 h-full bg-blue-500 rounded-t" />
+          </div>
         </div>
       </header>
       <ScrollContainer className="flex-1 mt-3">
-        {currentPage === "class" ? <SidebarClass /> : <SidebarElements />}
+        {currentPage === "data" ? <Data /> : <>layout</>}
       </ScrollContainer>
+      {isViewMaximize(barsStatus) && <PullBar bar="right" />}
     </div>
   );
 }
 
-export default Sidebar;
+export default RightBar;

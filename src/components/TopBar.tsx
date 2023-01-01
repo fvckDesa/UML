@@ -1,32 +1,35 @@
 // types
 import type { DownloadImageInfo } from "@src/types/download";
-import { ClickEvents } from "@src/types/uml";
+import type { ClickEvents } from "@src/types/uml";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DownloadModal from "./DownloadModal";
 import ToggleBtn from "@src/ui/ToggleBtn";
+import PullBar from "./PullBar";
 // hooks
 import { useState } from "react";
 import { useRedux } from "@src/hooks/useRedux";
 // redux
 import { setClickEvent } from "@src/features/umlSlice";
+import { toggleBar } from "@src/features/editorSlice";
 // icons
 import {
   faDownload,
-  faTrashCan,
   faArrowTrendUp,
-  faArrowsUpDownLeftRight,
   faBars,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { faHand, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 // utils
 import { saveAs } from "@src/utils/download";
+import { isViewMaximize } from "@src/utils/editor";
 
 function TopBar() {
   const [isOpen, setIsOpen] = useState(false);
   const { data, dispatch } = useRedux((state) => ({
     clickEvent: state.uml.clickEvent,
     haveError: Object.values(state.uml.errors).length > 0,
+    barsStatus: state.editor.barsStatus,
   }));
 
   async function handlerSave({ type, name }: DownloadImageInfo) {
@@ -51,8 +54,16 @@ function TopBar() {
     };
   }
 
+  function toggleRightBar() {
+    dispatch(toggleBar({ bar: "right" }));
+  }
+
   return (
-    <header className="flex justify-between items-center w-full h-12 px-6 py-2 border-b-2 border-gray-600">
+    <header
+      className={`relative flex justify-between items-center w-full h-top-bar px-6 py-2 border-b-2 border-gray-600 ${
+        data.barsStatus.top ? "mt-0" : "-mt-top-bar"
+      } transition-all bg-white`}
+    >
       <div className="flex justify-center items-center gap-2">
         <ToggleBtn
           active={data.clickEvent?.type === "arrow"}
@@ -66,7 +77,7 @@ function TopBar() {
         />
         <ToggleBtn
           active={data.clickEvent?.type === "move"}
-          icon={faArrowsUpDownLeftRight}
+          icon={faHand}
           onClick={handlerActive({ type: "move" })}
         />
       </div>
@@ -84,10 +95,11 @@ function TopBar() {
             />
           )}
         </button>
-        <button className="btnAction w-8 h-8">
-          <FontAwesomeIcon icon={false ? faXmark : faBars} />
+        <button className="btnAction w-8 h-8" onClick={toggleRightBar}>
+          <FontAwesomeIcon icon={data.barsStatus.right ? faXmark : faBars} />
         </button>
       </div>
+      {isViewMaximize(data.barsStatus) && <PullBar bar="top" />}
     </header>
   );
 }

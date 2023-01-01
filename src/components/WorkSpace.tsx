@@ -66,7 +66,7 @@ function WorkSpace({ width, height }: IProps) {
     <div
       ref={ref}
       id="workspace"
-      className="relative bg-[length:25px_25px] bg-dot z-0"
+      className="relative bg-[length:25px_25px] bg-dot bg-white z-0"
       style={{ width, height }}
       onDrop={handlerDrop}
       onDragOver={handlerDragOver}

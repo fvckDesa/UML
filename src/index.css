@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --top-bar: 48px;
+    --bottom-bar: 36px;
+    --left-bar-tabs: 48px;
+    --left-bar-panel: 220px;
+    --right-bar: 320px;
+  }
   button {
     @apply outline-none;
   }

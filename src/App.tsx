@@ -4,7 +4,9 @@ import type { ClickEvents } from "./types/uml";
 import ActionBar from "./components/ActionBar";
 import TopBar from "./components/TopBar";
 import ViewArea from "./components/ViewArea";
-import Sidebar from "./components/Sidebar";
+import RightBar from "./components/RightBar";
+import BottomBar from "./components/BottomBar";
+import LeftBar from "./components/LeftBar";
 // hooks
 import { useKeydown } from "./hooks/useKeydown";
 import { useRedux } from "./hooks/useRedux";
@@ -48,13 +50,20 @@ function App() {
   });
 
   return (
-    <div className="w-screen h-screen font-sans overflow-hidden select-none">
+    <div
+      id="editor"
+      className="flex flex-col w-screen h-screen overflow-hidden font-sans select-none"
+    >
       <TopBar />
-      <div className="relative w-full h-[calc(100%-48px)]">
-        <Sidebar />
-        <ViewArea />
-        <ActionBar />
+      <div className="flex-1 flex h-0 overflow-hidden">
+        <LeftBar />
+        <div className="relative flex-1 flex transition-all overflow-hidden z-0">
+          <ViewArea />
+          <ActionBar />
+        </div>
+        <RightBar />
       </div>
+      <BottomBar />
     </div>
   );
 }

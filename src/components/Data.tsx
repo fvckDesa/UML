@@ -21,7 +21,7 @@ import { createClassCode } from "@src/utils/code";
 // icons
 import { faCode } from "@fortawesome/free-solid-svg-icons";
 
-function SidebarClass() {
+function Data() {
   const { data, dispatch } = useRedux((state) => ({
     classEl: state.uml.activeElement
       ? (state.uml.elements[state.uml.activeElement] as ClassElement)
@@ -144,4 +144,4 @@ function SidebarClass() {
   );
 }
 
-export default SidebarClass;
+export default Data;

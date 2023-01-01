@@ -39,3 +39,10 @@ export type ClickEvents =
 export type PayloadWithId<T extends {} = never> = PayloadAction<
   { id: string } & (T extends never ? {} : Omit<T, "id">)
 >;
+
+export interface UML {
+  elements: Record<string, UMLElements>;
+  errors: Record<string, string>;
+  activeElement: string | null;
+  clickEvent: ClickEvents;
+}

@@ -1,6 +1,6 @@
 // types
 import type { Variable } from "@src/types/class";
-import { Control, FieldValues, UseFormRegister } from "react-hook-form";
+import type { Control, FieldValues, UseFormRegister } from "react-hook-form";
 import type { UIEvent } from "react";
 // components
 import ScrollContainer from "./ScrollContainer";
@@ -10,11 +10,7 @@ import TypeList from "@src/components/TypeList";
 import { useFieldArray, useFormState } from "react-hook-form";
 import { useState } from "react";
 // icons
-import {
-  faLayerGroup,
-  faPlus,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCubes, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface FieldValuesWithParameters extends FieldValues {
   parameters: Variable[];
@@ -112,7 +108,7 @@ function ParametersField({ control, register }: IProps) {
                   {...register(`parameters.${i}.isArray`)}
                 />
                 <div className="w-full h-full flex justify-center items-center cursor-pointer peer-checked:bg-blue-500 peer-checked:text-white">
-                  <FontAwesomeIcon icon={faLayerGroup} />
+                  <FontAwesomeIcon icon={faCubes} />
                 </div>
               </label>
               <button

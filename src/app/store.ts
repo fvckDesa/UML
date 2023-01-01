@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import elementsSlice from "@src/features/umlSlice";
+import umlSlice from "@src/features/umlSlice";
+import editorSlice from "@src/features/editorSlice";
 
 const store = configureStore({
   reducer: {
-    uml: elementsSlice,
+    uml: umlSlice,
+    editor: editorSlice,
   },
 });
 

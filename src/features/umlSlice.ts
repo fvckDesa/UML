@@ -1,18 +1,16 @@
 // types
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AtLeast } from "@src/types/general";
-import type { ClickEvents, PayloadWithId, UMLElements } from "@src/types/uml";
+import type {
+  ClickEvents,
+  PayloadWithId,
+  UMLElements,
+  UML,
+} from "@src/types/uml";
 // redux
 import { createSlice } from "@reduxjs/toolkit";
 // utils
 import { v4 as uuid } from "uuid";
-
-interface UML {
-  elements: Record<string, UMLElements>;
-  errors: Record<string, string>;
-  activeElement: string | null;
-  clickEvent: ClickEvents;
-}
 
 const initialState: UML = {
   elements: {},
@@ -22,7 +20,7 @@ const initialState: UML = {
 };
 
 const umlSlice = createSlice({
-  name: "elements",
+  name: "uml",
   initialState,
   reducers: {
     addElement: {
