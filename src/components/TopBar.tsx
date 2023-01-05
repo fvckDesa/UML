@@ -1,6 +1,6 @@
 // types
 import type { DownloadImageInfo } from "@src/types/download";
-import type { ClickEvents } from "@src/types/uml";
+import type { ClickEvents } from "@src/types/editor";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DownloadModal from "./DownloadModal";
@@ -10,8 +10,7 @@ import PullBar from "./PullBar";
 import { useState } from "react";
 import { useRedux } from "@src/hooks/useRedux";
 // redux
-import { setClickEvent } from "@src/features/umlSlice";
-import { toggleBar } from "@src/features/editorSlice";
+import { toggleBar, setClickEvent } from "@src/features/editorSlice";
 // icons
 import {
   faDownload,
@@ -27,7 +26,7 @@ import { isViewMaximize } from "@src/utils/editor";
 function TopBar() {
   const [isOpen, setIsOpen] = useState(false);
   const { data, dispatch } = useRedux((state) => ({
-    clickEvent: state.uml.clickEvent,
+    clickEvent: state.editor.clickEvent,
     haveError: Object.values(state.uml.errors).length > 0,
     barsStatus: state.editor.barsStatus,
   }));

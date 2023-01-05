@@ -19,7 +19,7 @@ interface IProps {
 function WorkSpace({ width, height }: IProps) {
   const { data, dispatch } = useRedux((state) => ({
     elements: state.uml.elements,
-    clickEvent: state.uml.clickEvent,
+    clickEvent: state.editor.clickEvent,
   }));
   const ref = useRef<HTMLDivElement>(null);
 

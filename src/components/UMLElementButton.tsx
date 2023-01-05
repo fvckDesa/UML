@@ -1,13 +1,13 @@
 // types
 import type { ElementsKeys } from "@src/data/umlElements";
 import type { DragEvent } from "react";
-import type { ClickEvents } from "@src/types/uml";
+import type { ClickEvents } from "@src/types/editor";
 // components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // hooks
 import { useRedux } from "@src/hooks/useRedux";
 // redux
-import { setClickEvent } from "@src/features/umlSlice";
+import { setClickEvent } from "@src/features/editorSlice";
 // icons
 import { faBan } from "@fortawesome/free-solid-svg-icons";
 // data
@@ -19,7 +19,7 @@ interface IProps {
 }
 
 function UMLElementButton({ element, icon }: IProps) {
-  const { data, dispatch } = useRedux((state) => state.uml.clickEvent);
+  const { data, dispatch } = useRedux((state) => state.editor.clickEvent);
   const isActive = data?.type === "element" && data?.info === element;
 
   function handlerDragStart(element: ElementsKeys) {

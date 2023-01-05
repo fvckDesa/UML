@@ -8,7 +8,7 @@ import { useGrabScroll } from "@src/hooks/useGrabScroll";
 import { useAppSelector } from "@src/hooks/useRedux";
 
 function ViewArea() {
-  const clickEvent = useAppSelector((state) => state.uml.clickEvent);
+  const clickEvent = useAppSelector((state) => state.editor.clickEvent);
   const { isGrabbing, target, onMouseDown, onMouseMove } =
     useGrabScroll<HTMLDivElement>({ reverse: true });
 

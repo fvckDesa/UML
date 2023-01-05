@@ -1,12 +1,7 @@
 // types
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AtLeast } from "@src/types/general";
-import type {
-  ClickEvents,
-  PayloadWithId,
-  UMLElements,
-  UML,
-} from "@src/types/uml";
+import type { PayloadWithId, UMLElements, UML } from "@src/types/uml";
 // redux
 import { createSlice } from "@reduxjs/toolkit";
 // utils
@@ -16,7 +11,6 @@ const initialState: UML = {
   elements: {},
   errors: {},
   activeElement: null,
-  clickEvent: null,
 };
 
 const umlSlice = createSlice({
@@ -104,9 +98,6 @@ const umlSlice = createSlice({
     setActiveElement(state, action: PayloadAction<string | null>) {
       state.activeElement = action.payload;
     },
-    setClickEvent(state, action: PayloadAction<ClickEvents>) {
-      state.clickEvent = action.payload;
-    },
   },
 });
 
@@ -118,7 +109,6 @@ export const {
   setError,
   deleteError,
   setActiveElement,
-  setClickEvent,
 } = umlSlice.actions;
 
 export default umlSlice.reducer;

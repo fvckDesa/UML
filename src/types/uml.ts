@@ -5,8 +5,6 @@ import { Arrow } from "./arrow";
 import { JavaClass } from "./class";
 // general
 import { Coords } from "./general";
-// data
-import { ElementsKeys } from "@src/data/umlElements";
 
 interface Element<T extends string, D, L> {
   type: T;
@@ -23,19 +21,6 @@ export type ArrowElement = Element<
 
 export type UMLElements = ClassElement | ArrowElement;
 
-type ClickEvent<Type extends string, Info = undefined> = Info extends undefined
-  ? {
-      type: Type;
-    }
-  : { type: Type; info: Info };
-
-export type ClickEvents =
-  | ClickEvent<"arrow">
-  | ClickEvent<"element", ElementsKeys>
-  | ClickEvent<"delete">
-  | ClickEvent<"move">
-  | null;
-
 export type PayloadWithId<T extends {} = never> = PayloadAction<
   { id: string } & (T extends never ? {} : Omit<T, "id">)
 >;
@@ -44,5 +29,4 @@ export interface UML {
   elements: Record<string, UMLElements>;
   errors: Record<string, string>;
   activeElement: string | null;
-  clickEvent: ClickEvents;
 }

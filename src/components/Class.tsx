@@ -32,7 +32,7 @@ function Class({ id, container }: IProps) {
     element: state.uml.elements[id] as ClassElement,
     error: state.uml.errors[id],
     activeElement: state.uml.activeElement,
-    clickEvent: state.uml.clickEvent,
+    clickEvent: state.editor.clickEvent,
   }));
   const { element, error, activeElement } = data;
 

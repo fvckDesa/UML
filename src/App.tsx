@@ -1,5 +1,5 @@
 // types
-import type { ClickEvents } from "./types/uml";
+import type { ClickEvents } from "./types/editor";
 // components
 import ActionBar from "./components/ActionBar";
 import TopBar from "./components/TopBar";
@@ -11,15 +11,12 @@ import LeftBar from "./components/LeftBar";
 import { useKeydown } from "./hooks/useKeydown";
 import { useRedux } from "./hooks/useRedux";
 // redux
-import {
-  deleteElement,
-  setActiveElement,
-  setClickEvent,
-} from "./features/umlSlice";
+import { deleteElement, setActiveElement } from "./features/umlSlice";
+import { setClickEvent } from "./features/editorSlice";
 
 function App() {
   const { data, dispatch } = useRedux((state) => ({
-    clickEvent: state.uml.clickEvent,
+    clickEvent: state.editor.clickEvent,
     activeElement: state.uml.activeElement,
   }));
 

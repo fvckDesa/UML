@@ -4,7 +4,7 @@ import UMLElementButton from "./UMLElementButton";
 // hooks
 import { useState, useEffect } from "react";
 // redux
-import { setClickEvent } from "@src/features/umlSlice";
+import { setClickEvent } from "@src/features/editorSlice";
 // icons
 import { ClassIcon } from "@src/assets";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,7 @@ import { useRedux } from "@src/hooks/useRedux";
 
 function ActionBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { data, dispatch } = useRedux((state) => state.uml.clickEvent);
+  const { data, dispatch } = useRedux((state) => state.editor.clickEvent);
 
   useEffect(() => {
     if (isOpen === false && data?.type === "element") {
