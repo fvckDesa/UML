@@ -14,15 +14,19 @@ import { faMaximize, faMinimize } from "@fortawesome/free-solid-svg-icons";
 import { isViewMaximize } from "@src/utils/editor";
 
 function BottomBar() {
-  const { data, dispatch } = useRedux((state) => state.editor.barsStatus);
-  const isMaximize = isViewMaximize(data);
+  const { data, dispatch } = useRedux((state) => ({
+    bars: state.editor.barsStatus,
+    activeElement: state.uml.activeElement,
+  }));
+  const isMaximize = isViewMaximize(data.bars);
 
   useKeydown({ target: window, events: { f: toggleView } });
 
   function toggleView() {
     const openAll = isMaximize ? true : false;
-    for (const bar of Object.keys(data) as Bars[]) {
-      if (openAll === true && bar === "right") continue;
+    for (const bar of Object.keys(data.bars) as Bars[]) {
+      if (openAll === true && bar === "right" && data.activeElement === null)
+        continue;
       dispatch(toggleBar({ bar, force: openAll }));
     }
   }
@@ -30,18 +34,18 @@ function BottomBar() {
   return (
     <div
       className={`relative w-full h-bottom-bar border-t border-gray-700 ${
-        data.bottom ? "mb-0" : "-mb-bottom-bar"
+        data.bars.bottom ? "mb-0" : "-mb-bottom-bar"
       } transition-all bg-white`}
     >
       <div className="flex justify-end w-[calc(100%-var(--bottom-bar))] h-full px-2"></div>
       <button
         type="button"
         className={`fixed bottom-0 h-bottom-bar aspect-square ${
-          data.bottom
+          data.bars.bottom
             ? "border-l border-gray-600"
             : "rounded-tl-lg bg-slate-300"
         } ${
-          !data.bottom && isMaximize && data.right
+          !data.bars.bottom && isMaximize && data.bars.right
             ? "right-right-bar"
             : "right-0"
         } transition-all`}

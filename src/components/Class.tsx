@@ -10,6 +10,7 @@ import {
   setActiveElement,
   updateElementLayout,
 } from "@src/features/umlSlice";
+import { toggleBar } from "@src/features/editorSlice";
 // utils
 import {
   stringifyAttribute,
@@ -85,7 +86,8 @@ function Class({ id, container }: IProps) {
   }
 
   function handlerClassSelect() {
-    dispatch(setActiveElement(id));
+    dispatch(setActiveElement(data.activeElement === id ? null : id));
+    dispatch(toggleBar({ bar: "right", force: !(data.activeElement === id) }));
   }
 
   function handlerClick() {
@@ -93,6 +95,7 @@ function Class({ id, container }: IProps) {
       case "delete": {
         if (data.activeElement === id) {
           dispatch(setActiveElement(null));
+          dispatch(toggleBar({ bar: "right", force: false }));
         }
         return dispatch(deleteElement(id));
       }

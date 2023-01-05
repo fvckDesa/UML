@@ -4,6 +4,7 @@ import ScrollContainer from "@src/ui/ScrollContainer";
 import { useRedux } from "@src/hooks/useRedux";
 // redux
 import { setActiveElement } from "@src/features/umlSlice";
+import { toggleBar } from "@src/features/editorSlice";
 
 function Layers() {
   const { data, dispatch } = useRedux((state) => ({
@@ -14,6 +15,9 @@ function Layers() {
   function handlerClick(id: string) {
     return function () {
       dispatch(setActiveElement(data.activeElement === id ? null : id));
+      dispatch(
+        toggleBar({ bar: "right", force: !(data.activeElement === id) })
+      );
     };
   }
 

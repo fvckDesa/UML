@@ -12,7 +12,7 @@ import { useKeydown } from "./hooks/useKeydown";
 import { useRedux } from "./hooks/useRedux";
 // redux
 import { deleteElement, setActiveElement } from "./features/umlSlice";
-import { setClickEvent } from "./features/editorSlice";
+import { setClickEvent, toggleBar } from "./features/editorSlice";
 
 function App() {
   const { data, dispatch } = useRedux((state) => ({
@@ -33,6 +33,7 @@ function App() {
     events: {
       Escape: () => {
         if (data.clickEvent === null) {
+          dispatch(toggleBar({ bar: "right", force: false }));
           return dispatch(setActiveElement(null));
         }
         dispatch(setClickEvent(null));
