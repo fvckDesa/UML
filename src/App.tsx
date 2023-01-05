@@ -57,7 +57,7 @@ function App() {
       <TopBar />
       <div className="flex-1 flex h-0 overflow-hidden">
         <LeftBar />
-        <div className="relative flex-1 flex transition-all overflow-hidden z-0">
+        <div className="relative flex-1 flex transition-all overflow-hidden">
           <ViewArea />
           <ActionBar />
         </div>

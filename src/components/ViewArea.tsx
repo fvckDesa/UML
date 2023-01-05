@@ -1,5 +1,5 @@
 // types
-import type { MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
 // components
 import WorkSpace from "./WorkSpace";
 // hooks
@@ -33,15 +33,21 @@ function ViewArea() {
 
   return (
     <div
-      ref={target}
       data-grabbing={isGrabbing}
       data-click-event={clickEvent?.type}
-      className="flex-1 transition-all overflow-hidden"
+      className="relative flex-1 transition-all overflow-hidden"
       onMouseDown={handlerRoleDown}
       onMouseMove={onMouseMove}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <WorkSpace width={3000} height={2000} />
+      <div
+        ref={target}
+        className="fixed top-0 left-0 w-screen h-screen overflow-hidden"
+      >
+        <div className="w-fit h-fit p-80 bg-slate-100">
+          <WorkSpace width={3000} height={2000} />
+        </div>
+      </div>
     </div>
   );
 }

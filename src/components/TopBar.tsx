@@ -62,7 +62,7 @@ function TopBar() {
     <header
       className={`relative flex justify-between items-center w-full h-top-bar px-6 py-2 border-b-2 border-gray-600 ${
         data.barsStatus.top ? "mt-0" : "-mt-top-bar"
-      } transition-all bg-white`}
+      } transition-all bg-white z-10`}
     >
       <div className="flex justify-center items-center gap-2">
         <ToggleBtn

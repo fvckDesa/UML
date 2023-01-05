@@ -14,7 +14,7 @@ export const UML_ELEMENTS: Readonly<Record<ElementsKeys, Element>> = {
   javaClass: {
     dimensions: {
       width: 220,
-      height: 154,
+      height: 150,
     },
     img: ClassSvg,
   },

@@ -19,6 +19,9 @@ module.exports = {
         "left-bar-panel": "var(--left-bar-panel)",
         "right-bar": "var(--right-bar)",
       },
+      boxShadow: {
+        "3xl": "0 0 60px -15px rgba(0, 0, 0, 0.3)",
+      },
     },
   },
   plugins: [],

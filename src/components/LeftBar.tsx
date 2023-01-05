@@ -15,7 +15,7 @@ function LeftBar() {
   const [tab, setTab] = useState<TabsName | null>(null);
   const barsStatus = useAppSelector((state) => state.editor.barsStatus);
   return (
-    <div className="relative flex border-r border-gray-700">
+    <div className="relative flex border-r border-gray-700 z-10">
       <div
         className={`relative flex flex-col gap-3 w-left-bar-tabs p-1 ${
           barsStatus.left ? "ml-0" : "-ml-left-bar-tabs"
