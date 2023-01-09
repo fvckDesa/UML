@@ -70,6 +70,8 @@ function WorkSpace({ width, height }: IProps) {
             Math.max(y * -1 + clientY - dimensions.height / 2, 0),
             height - dimensions.height
           ),
+          width: 220,
+          height: 150,
         },
       })
     );

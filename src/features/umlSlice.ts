@@ -22,6 +22,8 @@ const initialState: UML = {
       layout: {
         x: 1300,
         y: 1200,
+        width: 220,
+        height: 150,
       },
     },
     "2": {
@@ -37,6 +39,8 @@ const initialState: UML = {
       layout: {
         x: 1600,
         y: 900,
+        width: 220,
+        height: 150,
       },
     },
   },
@@ -70,7 +74,13 @@ const umlSlice = createSlice({
                 haveMain: false,
                 ...element.data,
               },
-              layout: { x: 0, y: 0, ...element.layout },
+              layout: {
+                x: 0,
+                y: 0,
+                width: 220,
+                height: 150,
+                ...element.layout,
+              },
             };
             break;
           }
@@ -82,7 +92,11 @@ const umlSlice = createSlice({
                 relationship: "association",
                 ...element.data,
               },
-              layout: { from: { x: 0, y: 0 }, ...element.layout },
+              layout: {
+                from: { x: 0, y: 0 },
+                to: { x: 0, y: 0 },
+                ...element.layout,
+              },
             };
             break;
           }

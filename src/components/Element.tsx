@@ -1,8 +1,15 @@
-import { updateElementLayout } from "@src/features/umlSlice";
+// types
+import type { ElementLayout } from "@src/types/uml";
+import type {
+  MouseEvent as ReactMouseEvent,
+  RefObject,
+  ComponentType,
+} from "react";
+// hooks
 import { useRedux } from "@src/hooks/useRedux";
-import { Coords } from "@src/types/general";
-import { ComponentType, useCallback, useEffect, useRef } from "react";
-import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
+import { useCallback, useEffect, useRef } from "react";
+// redux
+import { updateElementLayout } from "@src/features/umlSlice";
 
 interface IProps<D = any> {
   id: string;
@@ -23,7 +30,7 @@ function Element<D = any>({
     data: { layout, data, clickEvent },
     dispatch,
   } = useRedux((state) => ({
-    layout: state.uml.elements[id].layout as Coords,
+    layout: state.uml.elements[id].layout as ElementLayout,
     data: state.uml.elements[id].data as D,
     clickEvent: state.editor.clickEvent,
   }));
@@ -66,6 +73,26 @@ function Element<D = any>({
     };
   }, [handlerMouseMove]);
 
+  useEffect(() => {
+    if (!elementRef.current) return;
+    const observer = new ResizeObserver(() => {
+      if (!elementRef.current) return;
+      dispatch(
+        updateElementLayout({
+          id,
+          layout: {
+            width: elementRef.current.clientWidth,
+            height: elementRef.current.clientHeight,
+          },
+        })
+      );
+    });
+
+    observer.observe(elementRef.current);
+
+    return () => observer.disconnect();
+  }, [elementRef]);
+
   function handlerMouseDown(e: ReactMouseEvent) {
     e.preventDefault();
     onMouseDown(e);
@@ -83,7 +110,10 @@ function Element<D = any>({
     <div
       ref={elementRef}
       className="absolute"
-      style={{ top: layout.y, left: layout.x }}
+      style={{
+        top: layout.y,
+        left: layout.x,
+      }}
       onMouseDown={handlerMouseDown}
       onMouseUp={onMouseUp}
     >

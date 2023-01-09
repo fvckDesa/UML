@@ -12,7 +12,12 @@ interface Element<T extends string, D, L> {
   layout: L;
 }
 
-export type ClassElement = Element<"class", JavaClass, Coords>;
+export interface ElementLayout extends Coords {
+  width: number;
+  height: number;
+}
+
+export type ClassElement = Element<"class", JavaClass, ElementLayout>;
 export type ArrowElement = Element<
   "arrow",
   Arrow,

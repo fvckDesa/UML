@@ -1,15 +1,7 @@
-// types
-import type { MouseEvent as ReactMouseEvent, RefObject } from "react";
-import type { ClassElement } from "@src/types/uml";
 // hooks
-import { useCallback, useEffect, useRef } from "react";
 import { useRedux } from "@src/hooks/useRedux";
 // redux
-import {
-  deleteElement,
-  setActiveElement,
-  updateElementLayout,
-} from "@src/features/umlSlice";
+import { deleteElement, setActiveElement } from "@src/features/umlSlice";
 import { toggleBar } from "@src/features/editorSlice";
 // utils
 import {
@@ -54,7 +46,7 @@ function Class({ id, data }: IProps) {
 
   return (
     <div
-      className={`javaClass min-w-[220px] w-max ${
+      className={`javaClass min-w-[220px] w-full h-full ${
         activeElement === id
           ? "border-4 border-blue-500 shadow-lg"
           : error
