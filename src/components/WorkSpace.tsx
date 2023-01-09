@@ -1,5 +1,5 @@
 // types
-import type { DragEvent, MouseEvent } from "react";
+import { DragEvent, MouseEvent, useEffect, useState } from "react";
 // components
 import Class from "./Class";
 // hooks
@@ -10,6 +10,11 @@ import { addElement } from "@src/features/umlSlice";
 // data
 import { UML_ELEMENTS, isUMLElement } from "@src/data/umlElements";
 import { Dimensions } from "@src/types/general";
+import Arrow from "./Arrow";
+import { ClassElement } from "@src/types/uml";
+import { useNewArrow } from "@src/hooks/useNewArrow";
+import Line from "./Line";
+import Element from "./Element";
 
 interface IProps {
   width: number;
@@ -22,6 +27,7 @@ function WorkSpace({ width, height }: IProps) {
     clickEvent: state.editor.clickEvent,
   }));
   const ref = useRef<HTMLDivElement>(null);
+  const { from, to, ...handlers } = useNewArrow();
 
   function handlerDragOver(e: DragEvent<HTMLDivElement>) {
     e.preventDefault();
@@ -78,18 +84,34 @@ function WorkSpace({ width, height }: IProps) {
       onDrop={handlerDrop}
       onDragOver={handlerDragOver}
       onClick={handlerClick}
+      onMouseDown={handlers.handlerMouseDown(null)}
+      onMouseMove={handlers.handlerMouseMove()}
+      onMouseUp={handlers.handlerMouseUp(null)}
+      onMouseLeave={handlers.handlerMouseUp(null)}
     >
       {Object.keys(data.elements)
         .filter((id) => data.elements[id].type !== "arrow")
         .map((id) => (
-          <Class key={id} id={id} container={ref} />
+          <Element
+            key={id}
+            id={id}
+            component={Class}
+            container={ref}
+            onMouseDown={handlers.handlerMouseDown(id)}
+            onMouseUp={handlers.handlerMouseUp(id)}
+          />
         ))}
-      <svg width={width} height={height}>
+      <svg
+        width={width}
+        height={height}
+        viewBox={`-1 -1 ${width + 1} ${height + 1}`}
+      >
         {Object.keys(data.elements)
           .filter((id) => data.elements[id].type === "arrow")
           .map((id) => (
-            <>{/* <Arrow key={id} id={id} /> */}</>
+            <Arrow key={id} id={id} />
           ))}
+        {from && to && <Line from={from} to={to} />}
       </svg>
     </div>
   );

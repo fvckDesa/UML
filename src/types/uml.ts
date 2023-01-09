@@ -16,7 +16,7 @@ export type ClassElement = Element<"class", JavaClass, Coords>;
 export type ArrowElement = Element<
   "arrow",
   Arrow,
-  { from?: string | Coords; to?: string | Coords }
+  { from: string | Coords; to: string | Coords }
 >;
 
 export type UMLElements = ClassElement | ArrowElement;

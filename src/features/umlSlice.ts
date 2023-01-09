@@ -8,7 +8,38 @@ import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 
 const initialState: UML = {
-  elements: {},
+  elements: {
+    "1": {
+      type: "class",
+      data: {
+        name: "testClass1",
+        attributes: [],
+        constructors: [],
+        methods: [],
+        isFinal: false,
+        haveMain: false,
+      },
+      layout: {
+        x: 1300,
+        y: 1200,
+      },
+    },
+    "2": {
+      type: "class",
+      data: {
+        name: "testClass2",
+        attributes: [],
+        constructors: [],
+        methods: [],
+        isFinal: false,
+        haveMain: false,
+      },
+      layout: {
+        x: 1600,
+        y: 900,
+      },
+    },
+  },
   errors: {},
   activeElement: null,
 };
@@ -51,7 +82,7 @@ const umlSlice = createSlice({
                 relationship: "association",
                 ...element.data,
               },
-              layout: { ...element.layout },
+              layout: { from: { x: 0, y: 0 }, ...element.layout },
             };
             break;
           }
