@@ -10,15 +10,22 @@ import LeftBar from "./components/LeftBar";
 // hooks
 import { useKeydown } from "./hooks/useKeydown";
 import { useRedux } from "./hooks/useRedux";
+import { useFullscreen } from "./contexts/Fullscreen";
 // redux
 import { deleteElement, setActiveElement } from "./features/umlSlice";
 import { setClickEvent, toggleBar } from "./features/editorSlice";
+// hoc
+import { withProviders } from "./hoc/withProviders";
+// providers
+import UMLProvider from "./contexts/UML";
+import FullscreenProvider from "./contexts/Fullscreen";
 
 function App() {
   const { data, dispatch } = useRedux((state) => ({
     clickEvent: state.editor.clickEvent,
     activeElement: state.uml.activeElement,
   }));
+  const { fullscreenRef } = useFullscreen();
 
   function KeydownEventGenerator(event: ClickEvents) {
     return function () {
@@ -49,7 +56,7 @@ function App() {
 
   return (
     <div
-      id="editor"
+      ref={fullscreenRef}
       className="flex flex-col w-screen h-screen overflow-hidden font-sans select-none"
     >
       <TopBar />
@@ -66,4 +73,4 @@ function App() {
   );
 }
 
-export default App;
+export default withProviders(App, [UMLProvider, FullscreenProvider]);
