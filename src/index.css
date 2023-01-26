@@ -36,6 +36,9 @@
   [data-grabbing="true"] * {
     @apply cursor-grabbing;
   }
+  .isDownloading {
+    @apply !shadow-none;
+  }
   .isDownloading .javaClass {
     @apply border-2 border-gray-400;
   }
