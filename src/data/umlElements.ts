@@ -13,16 +13,16 @@ export interface Element {
 }
 
 export const UML_ELEMENTS = Object.freeze({
-  javaClass: {
-    dimensions: {
-      width: 220,
-      height: 150,
-    },
-    dragImg: ClassSvg,
-    icon: ClassIcon,
-  },
+	javaClass: {
+		dimensions: {
+			width: 220,
+			height: 150,
+		},
+		dragImg: ClassSvg,
+		icon: ClassIcon,
+	},
 }) satisfies Record<ElementsKeys, Element>;
 
 export function isUMLElement(element: string): element is ElementsKeys {
-  return element in UML_ELEMENTS;
+	return element in UML_ELEMENTS;
 }

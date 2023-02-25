@@ -1,7 +1,7 @@
 import {
-  KeyboardEvent as ReactKeyboardEvent,
-  useCallback,
-  useEffect,
+	KeyboardEvent as ReactKeyboardEvent,
+	useCallback,
+	useEffect,
 } from "react";
 
 type Target = Window | Document | Element | null;
@@ -20,33 +20,33 @@ interface IProps {
 const PROTECTED_ELEMENTS = [HTMLInputElement, HTMLTextAreaElement];
 
 export function useKeydown({ target, events }: IProps): KeyboardListener {
-  const handlerKeydown = useCallback(
-    (e: Event) => {
-      // not trigger key events when write in input, textarea, ecc..
-      if (
-        !(e.key in events) ||
+	const handlerKeydown = useCallback(
+		(e: Event) => {
+			// not trigger key events when write in input, textarea, ecc..
+			if (
+				!(e.key in events) ||
         (!PROTECTED_ELEMENTS.some((el) => e.currentTarget instanceof el) &&
           PROTECTED_ELEMENTS.some((el) => e.target instanceof el))
-      )
-        return;
+			)
+				return;
 
-      if ("beforeEach" in events) {
-        events.beforeEach(e);
-      }
-      events[e.key](e);
-    },
-    [events]
-  );
+			if ("beforeEach" in events) {
+				events.beforeEach(e);
+			}
+			events[e.key](e);
+		},
+		[events]
+	);
 
-  useEffect(() => {
-    if (!target) return;
+	useEffect(() => {
+		if (!target) return;
 
-    target.addEventListener("keydown", handlerKeydown as EventListener);
+		target.addEventListener("keydown", handlerKeydown as EventListener);
 
-    return () => {
-      target.removeEventListener("keydown", handlerKeydown as EventListener);
-    };
-  }, [target, handlerKeydown]);
+		return () => {
+			target.removeEventListener("keydown", handlerKeydown as EventListener);
+		};
+	}, [target, handlerKeydown]);
 
-  return handlerKeydown;
+	return handlerKeydown;
 }

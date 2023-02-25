@@ -14,10 +14,10 @@ export interface ListGroup {
 
 export type ListItem = ListGroup | Item;
 
-export function isListGroup(item: any): item is ListGroup {
-  return typeof item === "object" && "label" in item && "items" in item;
+export function isListGroup(item: unknown): item is ListGroup {
+	return typeof item === "object" && !!item && "label" in item && "items" in item;
 }
 
 export function isObjectItem(item: Item): item is ItemObject {
-  return typeof item === "object" && "label" in item && "value" in item;
+	return typeof item === "object" && "label" in item && "value" in item;
 }
