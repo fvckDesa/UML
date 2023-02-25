@@ -1,6 +1,11 @@
 // types
 import type { Variable } from "@src/types/class";
-import type { Control, FieldValues, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  FieldValues,
+  UseFormRegister,
+  useWatch,
+} from "react-hook-form";
 import type { UIEvent } from "react";
 // components
 import ScrollContainer from "./ScrollContainer";
@@ -24,6 +29,7 @@ interface IProps {
 function ParametersField({ control, register }: IProps) {
   const [isTop, setIsTop] = useState(true);
   const { errors } = useFormState({ control });
+  const parameters = useWatch({ control, name: "parameters" });
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "parameters",
@@ -81,7 +87,7 @@ function ParametersField({ control, register }: IProps) {
               <TypeList
                 onSelectOption={(value) => {
                   update(i, {
-                    ...field,
+                    ...parameters[i],
                     type: String(value),
                   });
                 }}

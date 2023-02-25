@@ -131,14 +131,14 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
         maxHeight={256}
         scrollAbsolute
       >
-        {items.map((item) =>
+        {items.map((item, i) =>
           isListGroup(item) ? (
-            <div key={item.label}>
+            <div key={`${item.label}-${i}`}>
               <h1 className="px-2 py-1 font-bold">{item.label}</h1>
               <ul>
-                {item.items.map((item) => (
+                {item.items.map((item, i) => (
                   <li
-                    key={getLabel(item)}
+                    key={`${getLabel(item)}-${i}`}
                     data-list-item={true}
                     className={`flex py-0.5 cursor-pointer ${
                       focusEl === getItemIndex(items, item)
@@ -173,7 +173,7 @@ function OptionsList({ items, element, onSelect, onClose }: IProps) {
             </div>
           ) : (
             <div
-              key={getLabel(item)}
+              key={`${getLabel(item)}-${i}`}
               data-list-item={true}
               className={`flex py-0.5 cursor-pointer ${
                 focusEl === getItemIndex(items, item)

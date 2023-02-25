@@ -1,0 +1,9 @@
+<svg id="eBH2Lp0o1OP1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"
+  shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+  <rect width="14.640407" height="4.223733" rx="0" ry="0" transform="translate(.744381 1.212755)" fill="#e5e7eb"
+    stroke-width="0" />
+  <line x1="-7.5" y1="0" x2="7.5" y2="0" transform="translate(8 10)" fill="none" stroke="#000" stroke-width="0.5" />
+  <line x1="-7.5" y1="0.02091" x2="7.5" y2="0.02091" transform="translate(8 5.415577)" fill="none" stroke="#000"
+    stroke-width="0.5" />
+  <rect width="15" height="14" rx="1" ry="1" transform="translate(.5 1)" fill="none" stroke="#000" stroke-width="0.5" />
+</svg>

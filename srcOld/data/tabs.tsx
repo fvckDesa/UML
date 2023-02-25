@@ -2,7 +2,7 @@
 import type { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
 // components
-import Layers from "@src/common/components/Layers";
+import Layers from "@src/components/Layers";
 // icons
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 

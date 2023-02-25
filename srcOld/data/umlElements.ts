@@ -1,27 +1,24 @@
 // types
-import type { Dimensions } from "@src/common/types";
+import type { Dimensions } from "@src/types/general";
 // assets
 import { ClassSvg } from "@src/assets";
-import { ClassIcon } from "@src/assets";
 
 export type ElementsKeys = "javaClass";
 
-export interface Element {
+interface Element {
   dimensions: Dimensions;
-  dragImg: string;
-  icon: string;
+  img: string;
 }
 
-export const UML_ELEMENTS = Object.freeze({
+export const UML_ELEMENTS: Readonly<Record<ElementsKeys, Element>> = {
   javaClass: {
     dimensions: {
       width: 220,
       height: 150,
     },
-    dragImg: ClassSvg,
-    icon: ClassIcon,
+    img: ClassSvg,
   },
-}) satisfies Record<ElementsKeys, Element>;
+};
 
 export function isUMLElement(element: string): element is ElementsKeys {
   return element in UML_ELEMENTS;

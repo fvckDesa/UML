@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --top-bar: 48px;
+    --bottom-bar: 36px;
+    --left-bar-tabs: 48px;
+    --left-bar-panel: 220px;
+    --right-bar: 320px;
+  }
+  button {
+    @apply outline-none;
+  }
+}
+
+@layer components {
+  .btnAction {
+    @apply opacity-70 rounded transition-all hover:bg-gray-200 hover:opacity-100;
+  }
+
+  .btnAction:disabled {
+    @apply opacity-40 hover:bg-transparent;
+  }
+
+  [data-click-event="arrow"] *,
+  [data-click-event="element"] * {
+    @apply cursor-crosshair;
+  }
+
+  [data-click-event="move"] * {
+    @apply cursor-grab;
+  }
+
+  [data-grabbing="true"] * {
+    @apply cursor-grabbing;
+  }
+  .isDownloading {
+    @apply !shadow-none;
+  }
+  .isDownloading .javaClass {
+    @apply border-2 border-gray-400;
+  }
+}

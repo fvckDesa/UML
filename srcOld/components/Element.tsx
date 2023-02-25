@@ -9,11 +9,15 @@ import type {
 import { useRedux } from "@src/hooks/useRedux";
 import { useCallback, useEffect, useRef } from "react";
 // redux
-import { updateElementLayout } from "@src/features/umlSlice";
+import {
+  deleteElement,
+  setActiveElement,
+  updateElementLayout,
+} from "@src/features/umlSlice";
 
 interface IProps<D = any> {
   id: string;
-  component: ComponentType<{ id: string; data: D }>;
+  component: ComponentType<{ data: D }>;
   container: RefObject<HTMLDivElement>;
   onMouseDown: (e: ReactMouseEvent) => void;
   onMouseUp: (e: ReactMouseEvent) => void;
@@ -27,12 +31,13 @@ function Element<D = any>({
   onMouseUp,
 }: IProps<D>) {
   const {
-    data: { layout, data, clickEvent },
+    data: { layout, data, clickEvent, isActive },
     dispatch,
   } = useRedux((state) => ({
     layout: state.uml.elements[id].layout as ElementLayout,
     data: state.uml.elements[id].data as D,
     clickEvent: state.editor.clickEvent,
+    isActive: state.uml.activeElement === id,
   }));
   const grabPoint = useRef({ x: 0, y: 0 });
   const elementRef = useRef<HTMLDivElement>(null);
@@ -73,10 +78,11 @@ function Element<D = any>({
     };
   }, [handlerMouseMove]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (!elementRef.current) return;
     const observer = new ResizeObserver(() => {
       if (!elementRef.current) return;
+      console.log(elementRef.current.clientWidth);
       dispatch(
         updateElementLayout({
           id,
@@ -91,7 +97,7 @@ function Element<D = any>({
     observer.observe(elementRef.current);
 
     return () => observer.disconnect();
-  }, [elementRef]);
+  }, [elementRef]); */
 
   function handlerMouseDown(e: ReactMouseEvent) {
     e.preventDefault();
@@ -106,18 +112,34 @@ function Element<D = any>({
     window.addEventListener("mousemove", handlerMouseMove);
   }
 
+  function handlerClick() {
+    switch (clickEvent?.type) {
+      case "delete": {
+        if (isActive) dispatch(setActiveElement(null));
+        dispatch(deleteElement(id));
+        break;
+      }
+      default: {
+        dispatch(setActiveElement(isActive ? null : id));
+      }
+    }
+  }
+
   return (
     <div
       ref={elementRef}
-      className="absolute"
+      className={`absolute border ${
+        isActive ? "border-gray-500" : "border-transparent"
+      }`}
       style={{
         top: layout.y,
         left: layout.x,
       }}
       onMouseDown={handlerMouseDown}
       onMouseUp={onMouseUp}
+      onClick={handlerClick}
     >
-      {<Component id={id} data={data} />}
+      {<Component data={data} />}
     </div>
   );
 }

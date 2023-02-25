@@ -5,7 +5,7 @@ import { createContext, useContext, useRef } from "react";
 // fullscreen
 import screenfull from "screenfull";
 
-interface IFullscreen {
+interface IProps {
   children: ReactNode;
 }
 
@@ -21,7 +21,7 @@ export interface FullscreenContext {
 
 const Context = createContext<FullscreenContext | null>(null);
 
-function FullscreenProvider({ children }: IFullscreen) {
+function FullscreenProvider({ children }: IProps) {
   const ref = useRef<Element>(null);
   const forceRerender = useState<Event | null>(null);
 

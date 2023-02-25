@@ -1,21 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 // slices
-import umlSlice from "@src/features/umlSlice";
-import editorSlice from "@src/features/editorSlice";
-// middlewares
-import { deleteMiddleware } from "@src/middlewares/deleteMiddleware";
+import editorSlice from "@src/features/editor/editorSlice";
+import graphSlice from "@src/features/graph/graphSlice";
 
 const store = configureStore({
   reducer: {
-    uml: umlSlice,
     editor: editorSlice,
+    graph: graphSlice,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().prepend(deleteMiddleware),
 });
-
-export type RootState = ReturnType<typeof store.getState>;
-
-export type AppDispatch = typeof store.dispatch;
 
 export default store;
